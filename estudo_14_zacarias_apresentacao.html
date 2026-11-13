@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zacarias — Visões da Restauração</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    --hebrew: "SBL Hebrew", "Times New Roman", "David", serif;
+    --gold: #D8B46A;
+    --crimson: #8E2430;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body { font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; background: #090D1A; transition: background-color .7s ease; -webkit-font-smoothing: antialiased; }
+  body[data-theme="light"] { background: #E8DECD; }
+  body[data-theme="dawn"] { background: #EBCBA8; }
+  body.idle, body.idle * { cursor: none !important; }
+
+  /* ---------- Palco 16:9 ---------- */
+  .deck { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0; overflow: hidden;
+    padding: 110px 160px;
+    display: flex; flex-direction: column; justify-content: center;
+    opacity: 0; visibility: hidden;
+    transition: opacity .7s ease, visibility 0s linear .7s;
+  }
+  .slide.active { opacity: 1; visibility: visible; transition: opacity .7s ease; z-index: 1; }
+
+  .slide.night {
+    --fg: #F2EADB; --fg2: #E4DCCD; --muted: #A9AEBC; --accent: var(--gold); --accent2: var(--gold); --rule: rgba(242,234,219,.14); --bg: #090D1A;
+    color: var(--fg);
+    background:
+      radial-gradient(1100px 760px at 78% 12%, rgba(52,66,120,.55) 0%, transparent 62%),
+      radial-gradient(900px 700px at 8% 105%, rgba(60,30,70,.45) 0%, transparent 60%),
+      #090D1A;
+  }
+  .slide.light {
+    --fg: #1E1A16; --fg2: #2B241E; --muted: #6E6257; --accent: var(--crimson); --accent2: #946A22; --rule: rgba(30,26,22,.14); --bg: #F1E8D9;
+    color: var(--fg);
+    background: radial-gradient(1500px 1000px at 50% 38%, #FAF5EC 0%, #F1E8D9 62%, #E6DAC6 100%);
+  }
+  .slide.dawn {
+    --fg: #241912; --fg2: #33241A; --muted: #6E5646; --accent: var(--crimson); --accent2: #8A5A1E; --rule: rgba(36,25,18,.16); --bg: #F2D9BC;
+    color: var(--fg);
+    background:
+      radial-gradient(1300px 700px at 50% 112%, rgba(255,214,150,.95) 0%, transparent 62%),
+      linear-gradient(180deg, #F7EBDA 0%, #F2D9BC 58%, #E9BD92 100%);
+  }
+  .slide.light::before, .slide.dawn::before {
+    content: ""; position: absolute; inset: 40px; pointer-events: none;
+    border: 1px solid rgba(142,36,48,.16);
+  }
+  .slide.has-panel::before { display: none; }
+
+  /* Estrelas */
+  .stars { position: absolute; inset: 0; pointer-events: none; }
+  .stars i { position: absolute; border-radius: 50%; background: #F6EEDC; }
+  @keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: .9; } }
+
+  /* Rodapé discreto */
+  .folio {
+    position: absolute; left: 160px; right: 160px; bottom: 58px;
+    display: flex; justify-content: space-between;
+    font: 600 20px/1 var(--sans); letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted); opacity: .7; pointer-events: none;
+  }
+  .has-panel.panel-right .folio { right: calc(42% + 70px); }
+  .has-panel.panel-left .folio { left: calc(46% + 70px); }
+
+  /* ---------- Imagens (pinturas) ---------- */
+  .panel {
+    position: absolute; top: 0; bottom: 0; right: 0; width: 42%; margin: 0; display: none; z-index: 0;
+    background-size: cover; background-position: center; cursor: zoom-in;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 18%);
+            mask-image: linear-gradient(to right, transparent 0, #000 18%);
+  }
+  .panel.left {
+    left: 0; right: auto; width: 46%;
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 18%);
+            mask-image: linear-gradient(to left, transparent 0, #000 18%);
+  }
+  .slide.has-panel .panel { display: block; }
+  .slide.has-panel.panel-right { padding-right: calc(42% + 70px); }
+  .slide.has-panel.panel-left { padding-left: calc(46% + 70px); }
+  .slide > :where(:not(.panel, .stars, .bgimg, .folio, .moon, .v-num, .sign)) { position: relative; z-index: 1; }
+
+  .bgimg { position: absolute; inset: 0; display: none; background-size: cover; background-position: center; }
+  .bgimg::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(9,13,26,.94) 0%, rgba(9,13,26,.72) 38%, rgba(9,13,26,.18) 75%, rgba(9,13,26,.05) 100%),
+      linear-gradient(0deg, rgba(9,13,26,.75) 0%, transparent 40%);
+  }
+  .slide.has-bg .bgimg { display: block; }
+  .slide.has-bg .moon, .slide.has-bg .stars { display: none; }
+
+  .fs { font-size: var(--fs) !important; }
+  .has-panel .fs { font-size: var(--fsp, var(--fs)) !important; }
+
+  /* ---------- Tipografia ---------- */
+  .kicker { font: 600 28px/1.2 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin: 0 0 30px; }
+  .display { font: 600 230px/.9 var(--serif); letter-spacing: -.015em; margin: 0; }
+  .h1 { font: 600 140px/1 var(--serif); letter-spacing: -.01em; margin: 0; }
+  .h2 { font: 600 96px/1.04 var(--serif); letter-spacing: -.005em; margin: 0 0 46px; }
+  .h3 { font: 600 58px/1.1 var(--serif); margin: 0 0 18px; }
+  .lead { font: 400 50px/1.42 var(--sans); margin: 0; }
+  .body { font: 400 44px/1.48 var(--sans); margin: 0; }
+  .body strong, .lead strong { font-weight: 700; color: var(--accent); }
+  .muted { color: var(--muted); }
+  .ref { font: 600 28px/1.3 var(--sans); letter-spacing: .08em; color: var(--accent2); }
+  .quote { font: italic 500 78px/1.2 var(--serif); margin: 0; }
+  .center { align-items: center; text-align: center; }
+  .rule { width: 120px; height: 2px; background: var(--accent); opacity: .7; border: 0; margin: 44px 0; }
+  .center .rule { margin-left: auto; margin-right: auto; }
+
+  /* Referências bíblicas clicáveis */
+  .vr {
+    font: inherit; color: var(--accent2); background: none; border: 0; padding: 0; margin: 0;
+    cursor: pointer; border-bottom: 2px dotted currentColor; letter-spacing: inherit;
+  }
+  .vr:hover { color: var(--accent); }
+
+  /* Elementos ampliáveis */
+  [data-z] { cursor: zoom-in; transition: background-color .25s ease; border-radius: 6px; }
+  [data-z]:hover { background-color: rgba(142,36,48,.05); }
+  .night [data-z]:hover { background-color: rgba(216,180,106,.06); }
+
+  /* ---------- Animações ---------- */
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+  .slide.active .rise { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 110ms + 180ms); }
+  .f { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .f.on { opacity: 1; transform: none; }
+
+  /* ---------- Abertura ---------- */
+  .title-slide { justify-content: flex-end; padding-bottom: 210px; }
+  .title-slide .display { font-size: 280px; }
+  .title-slide .subtitle { font: italic 500 92px/1.1 var(--serif); color: var(--gold); margin: 18px 0 0; }
+  .moon {
+    position: absolute; right: 230px; top: 150px; width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #FFF6E2 0%, #F1DDB0 45%, #C9A867 100%);
+    box-shadow: 0 0 120px 40px rgba(241,221,176,.18), 0 0 300px 120px rgba(120,140,220,.10);
+    opacity: .9;
+  }
+  .sign { display: flex; align-items: center; gap: 22px; font: 600 24px/1.2 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .sign svg { width: 64px; height: 64px; }
+  .title-slide .sign { position: absolute; left: 160px; bottom: 90px; }
+
+  /* ---------- Divisores ---------- */
+  .divider .numeral { font: 600 96px/1 var(--serif); color: var(--accent); opacity: .9; margin-bottom: 30px; letter-spacing: .02em; }
+  .divider .h1 { font-size: 150px; }
+  .divider .lead { margin-top: 34px; }
+  .icon-row { display: flex; gap: 46px; margin-bottom: 70px; color: var(--gold); }
+  .icon-row svg { width: 92px; height: 92px; opacity: .85; }
+
+  /* ---------- Símbolos (dinâmica) ---------- */
+  .symbols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 90px; margin-top: 0; }
+  .symbol { margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; }
+  .sym-tile {
+    width: 380px; height: 380px; border-radius: 44px; display: grid; place-items: center;
+    background: #FFFDF8; box-shadow: 0 30px 60px -30px rgba(60,40,20,.35), 0 0 0 1px rgba(30,26,22,.06);
+    transition: transform .4s ease;
+  }
+  .symbol:hover .sym-tile { transform: translateY(-6px); }
+  .sym-tile svg { width: 280px; height: 280px; }
+  .symbol figcaption { margin-top: 36px; min-height: 76px; font: 600 68px/1.05 var(--serif); color: var(--accent); }
+
+  /* ---------- Textos densos ---------- */
+  .dense { font: 500 66px/1.4 var(--serif); margin: 0; max-width: 1560px; text-wrap: pretty; }
+  .dense-meta { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 56px; }
+  .dense-meta .kicker { margin: 0; }
+
+  /* ---------- Estrutura ---------- */
+  .toc { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .toc li { display: grid; grid-template-columns: 280px 1fr; align-items: baseline; padding: 13px 10px; border-bottom: 1px solid var(--rule); }
+  .toc .ref { font-size: 32px; }
+  .toc .t { font: 500 52px/1.12 var(--serif); }
+
+  /* ---------- Nome ---------- */
+  .hebrew { font: 400 150px/1.1 var(--hebrew); color: var(--accent); opacity: .9; direction: rtl; margin-bottom: 16px; }
+  .name-slide .display { font-style: italic; font-weight: 500; }
+
+  /* ---------- Cartões ---------- */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px; }
+  .card { padding: 46px 44px 44px; border-top: 3px solid var(--accent); background: rgba(255,255,255,.42); }
+  .card .n { font: 600 30px/1 var(--sans); letter-spacing: .2em; color: var(--accent2); margin-bottom: 26px; }
+  .card p { font: 400 38px/1.42 var(--sans); margin: 0 0 24px; }
+
+  /* ---------- Gráfico a.C. / d.C. ---------- */
+  .vchart { width: 1600px; height: 600px; overflow: visible; margin-top: 10px; }
+  .vchart text { font-family: var(--sans); }
+  .vchart .axis { stroke: rgba(30,26,22,.35); stroke-width: 2; }
+  .vchart .tick { stroke: rgba(30,26,22,.35); stroke-width: 2; }
+  .vchart .tick-l { font-size: 24px; font-weight: 600; fill: #6E6257; text-anchor: middle; }
+  .vchart .era { font-size: 26px; font-weight: 700; letter-spacing: .2em; fill: var(--crimson); text-anchor: middle; }
+  .vchart .era-s { font-size: 28px; fill: #6E6257; text-anchor: middle; font-style: italic; font-family: var(--serif); }
+  .vchart .vline { fill: none; stroke: var(--crimson); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .slide.active .vchart .vline { animation: draw 2.4s cubic-bezier(.4,0,.2,1) .5s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .vchart .guide { stroke: rgba(30,26,22,.25); stroke-width: 2; stroke-dasharray: 4 8; }
+  .vchart .dot { fill: #F7F1E6; stroke: var(--crimson); stroke-width: 5; }
+  .vchart .dot.hl { fill: var(--crimson); }
+  .vchart .dot.jc { fill: #C99B3E; stroke: #C99B3E; }
+  .vchart .ev-y { font-size: 28px; font-weight: 700; fill: var(--crimson); }
+  .vchart .ev-t { font-size: 40px; font-family: var(--serif); font-weight: 600; fill: #1E1A16; }
+  .vchart .ev-s { font-size: 26px; fill: #6E6257; }
+
+  /* ---------- Linha do tempo ---------- */
+  .timeline { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 110px; }
+  .tl-line { position: absolute; left: 10%; right: 10%; top: 104px; height: 2px; background: var(--rule); }
+  .tl-span { position: absolute; left: 30%; width: 40%; top: 97px; height: 16px; border-radius: 8px; background: rgba(142,36,48,.18); }
+  .tl-span span { position: absolute; left: 0; right: 0; top: -150px; text-align: center; font: 600 24px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .tl-node { text-align: center; padding: 0 14px 10px; }
+  .tl-year { font: 700 32px/1 var(--sans); letter-spacing: .06em; color: var(--muted); height: 70px; display: flex; align-items: flex-end; justify-content: center; }
+  .tl-dot { width: 26px; height: 26px; border-radius: 50%; margin: 21px auto 34px; background: #F7F1E6; border: 3px solid var(--muted); position: relative; z-index: 1; }
+  .tl-node.key .tl-dot { width: 40px; height: 40px; margin: 14px auto 27px; background: var(--crimson); border-color: var(--crimson); box-shadow: 0 0 0 10px rgba(142,36,48,.12); }
+  .tl-node.key .tl-year { color: var(--crimson); }
+  .tl-node.goal .tl-dot { background: #C99B3E; border-color: #C99B3E; }
+  .tl-node.goal .tl-year { color: #946A22; }
+  .tl-text { font: 500 46px/1.12 var(--serif); }
+  .tl-node .ref { display: block; margin-top: 14px; font-size: 26px; }
+
+  /* ---------- Crise ---------- */
+  .crisis { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 90px; }
+  .crisis li { display: flex; justify-content: space-between; align-items: baseline; gap: 30px; padding: 22px 10px; border-bottom: 1px solid var(--rule); }
+  .crisis li span { font: 500 50px/1.12 var(--serif); }
+  .crisis li em { font: normal 600 28px/1 var(--sans); letter-spacing: .06em; color: var(--accent2); white-space: nowrap; }
+  .hope { margin-top: 70px; padding-left: 44px; border-left: 4px solid #C99B3E; font: italic 600 74px/1.15 var(--serif); color: var(--accent); }
+  .has-panel .crisis { grid-template-columns: 1fr; }
+  .has-panel .crisis li { padding: 15px 10px; }
+  .has-panel .crisis li span { font-size: 46px; }
+  .has-panel .hope { font-size: 56px; margin-top: 40px; }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; }
+  .has-panel .cols { grid-template-columns: 1fr; gap: 28px; }
+
+  /* ---------- Visões ---------- */
+  .v-grid { display: grid; grid-template-columns: 640px 1fr; gap: 110px; align-items: center; }
+  .v-art {
+    width: 640px; height: 640px; border-radius: 50%; display: grid; place-items: center; color: var(--gold);
+    background: radial-gradient(circle, rgba(216,180,106,.15) 0%, rgba(216,180,106,.04) 55%, rgba(216,180,106,0) 72%);
+    box-shadow: inset 0 0 0 1px rgba(216,180,106,.22);
+  }
+  .v-art svg { width: 450px; height: 450px; filter: drop-shadow(0 0 18px rgba(216,180,106,.25)); }
+  .v-head { display: flex; align-items: center; gap: 26px; margin-bottom: 30px; }
+  .v-head .kicker { margin: 0; }
+  .v-badge { display: none; width: 96px; height: 96px; flex: none; color: var(--gold); padding: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(216,180,106,.35); background: rgba(216,180,106,.08); }
+  .v-badge.duo { width: auto; padding: 10px 18px; border-radius: 48px; display: none; gap: 6px; }
+  .v-badge.duo svg { width: 76px; height: 76px; }
+  .vision .h2 { font-size: 86px; margin-bottom: 36px; }
+  .vision .body { font-size: 42px; color: var(--fg2); }
+  .v-key { margin: 40px 0 0; padding-top: 32px; border-top: 1px solid var(--rule); font: italic 600 56px/1.2 var(--serif); color: var(--gold); }
+  .v-num { position: absolute !important; right: 90px; bottom: -150px; font: 600 560px/1 var(--serif); color: var(--gold); opacity: .05; pointer-events: none; z-index: 0 !important; }
+  .has-panel .v-art { display: none; }
+  .has-panel .v-grid { grid-template-columns: 1fr; }
+  .has-panel .v-badge { display: block; }
+  .has-panel .v-badge.duo { display: flex; }
+  .has-panel.vision .h2 { font-size: 78px; }
+  .has-panel.vision .body { font-size: 40px; }
+  .has-panel.vision .v-key { font-size: 50px; }
+
+  .art { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .art .tint { fill: currentColor; fill-opacity: .12; }
+
+  /* ---------- Citações em destaque ---------- */
+  .verse { font: italic 500 100px/1.16 var(--serif); margin: 0; max-width: 1560px; text-wrap: balance; }
+
+  .contrast { display: grid; grid-template-columns: 1fr 1.35fr; gap: 80px; margin-bottom: 64px; }
+  .contrast p { margin: 0; font: 500 60px/1.16 var(--serif); }
+  .contrast .no p { color: var(--muted); }
+  .contrast .yes { padding-left: 60px; border-left: 3px solid var(--accent); }
+  .scripture { font: italic 500 52px/1.32 var(--serif); margin: 0; color: var(--fg); }
+  .scripture + .ref { margin-top: 22px; }
+
+  .big-year { font: 600 280px/.9 var(--serif); color: var(--crimson); letter-spacing: -.02em; }
+  .big-year small { font-size: 110px; margin-left: 18px; }
+
+  /* ---------- Reflexão ---------- */
+  .question { justify-content: flex-start; padding-top: 120px; }
+  .q-context { font: 400 38px/1.45 var(--sans); color: var(--muted); margin: 0 0 30px; max-width: 1560px; }
+  .q-main { font: 600 80px/1.1 var(--serif); margin: 0 0 54px; max-width: 1560px; text-wrap: balance; }
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 60px; align-content: start; }
+  .answer {
+    position: relative; padding: 16px 70px 16px 30px; border-left: 4px solid #C99B3E;
+    font: 400 38px/1.35 var(--sans); background: rgba(255,255,255,.4);
+    animation: rise .6s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .answers.dense .answer { font-size: 30px; padding-top: 12px; padding-bottom: 12px; }
+  .answer button {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    width: 42px; height: 42px; border: 0; border-radius: 50%; background: transparent; color: var(--muted);
+    font-size: 30px; line-height: 1; cursor: pointer; opacity: 0; transition: opacity .2s;
+  }
+  .answer:hover button { opacity: .8; }
+  .answer-input { grid-column: 1 / -1; }
+  .answer-input input {
+    width: 100%; border: 0; border-bottom: 2px solid #C99B3E; background: transparent; outline: none;
+    font: 400 40px/1.4 var(--sans); color: var(--fg); padding: 10px 4px;
+  }
+
+  /* ---------- Ampliação (pop-up) ---------- */
+  .pop {
+    position: absolute; inset: 0; z-index: 50; display: none;
+    background: rgba(6,9,18,.72); backdrop-filter: blur(10px);
+    align-items: center; justify-content: center;
+  }
+  .pop.open { display: flex; animation: popIn .35s ease both; }
+  @keyframes popIn { from { opacity: 0; } to { opacity: 1; } }
+  .pop-card {
+    position: relative; width: 1800px; height: 980px; border-radius: 30px;
+    background: #FBF7EF; color: #1E1A16; display: flex; flex-direction: column;
+    padding: 64px 110px 50px; box-shadow: 0 40px 120px rgba(0,0,0,.45);
+    animation: cardIn .45s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes cardIn { from { transform: translateY(30px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+  .pop-top { display: flex; justify-content: space-between; align-items: center; min-height: 56px; }
+  .pop-kicker { font: 600 30px/1.2 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--crimson); }
+  .pop-x {
+    width: 64px; height: 64px; border-radius: 50%; border: 0; background: rgba(30,26,22,.06); color: #6E6257;
+    font: 400 46px/1 var(--sans); cursor: pointer;
+  }
+  .pop-body { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; min-height: 0; }
+  .pop-body h3 { font: 600 92px/1.06 var(--serif); margin: 0 0 40px; text-wrap: balance; }
+  .pop-body p { font: 400 54px/1.45 var(--sans); margin: 0 0 26px; }
+  .pop-body p:last-child { margin-bottom: 0; }
+  .pop-body .ref, .pop-body .vr { font-size: 36px; }
+  .pop-body .vr { color: #946A22; }
+  .pop-body .pv { font: 400 54px/1.55 var(--sans); margin: 0; }
+  .pop-body .pv sup { font: 700 30px/1 var(--sans); color: var(--crimson); margin: 0 10px 0 6px; vertical-align: super; }
+  .pop-body .pv i { font-style: normal; }
+  .pop-clone { zoom: 1.4; }
+  .pop-split { display: grid; grid-template-columns: 700px 1fr; gap: 80px; align-items: center; height: 100%; min-height: 0; }
+  .pop-img { height: 100%; border-radius: 20px; background-size: cover; background-position: center; box-shadow: 0 20px 50px -20px rgba(30,20,10,.5); }
+  .pop-text { display: flex; flex-direction: column; justify-content: center; height: 100%; min-height: 0; overflow: hidden; }
+  .pop-split h3 { font-size: 80px; margin-bottom: 34px; }
+  .pop-split p { font-size: 48px; }
+  .pop-clone .rise, .pop-clone .f { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .pop-foot { display: flex; justify-content: space-between; align-items: center; min-height: 64px; margin-top: 20px; }
+  .pop-credit { font: 600 22px/1 var(--sans); letter-spacing: .12em; color: #9B8F84; }
+  .pop-nav { display: flex; align-items: center; gap: 18px; font: 600 28px/1 var(--sans); color: #6E6257; font-variant-numeric: tabular-nums; }
+  .pop-nav button {
+    width: 64px; height: 64px; border-radius: 50%; border: 0; background: rgba(30,26,22,.06); color: #1E1A16;
+    font: 400 44px/1 var(--sans); cursor: pointer;
+  }
+  .pop-nav button:disabled { opacity: .25; cursor: default; }
+  .pop.image .pop-card { background: #0B0F1C; padding: 30px; width: 1860px; height: 1040px; }
+  .pop.image .pop-top, .pop.image .pop-foot { display: none; }
+  .pop.image .pop-body { align-items: center; }
+  .pop.image .pop-body img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 14px; }
+
+  /* ---------- Controles discretos ---------- */
+  .dock {
+    position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 16px); z-index: 60;
+    display: flex; align-items: center; gap: 4px; padding: 6px;
+    background: rgba(14,18,32,.82); backdrop-filter: blur(12px); border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.08);
+    opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s;
+    font: 600 14px/1 var(--sans); color: #E9E2D3;
+  }
+  .dock.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+  .dock button {
+    width: 40px; height: 40px; border: 0; border-radius: 10px; background: transparent; color: inherit;
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .dock button:hover { background: rgba(255,255,255,.1); }
+  .dock button[hidden] { display: none; }
+  .dock svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .dock .count { min-width: 70px; text-align: center; letter-spacing: .06em; font-variant-numeric: tabular-nums; opacity: .8; }
+  .dock .sep { width: 1px; height: 22px; background: rgba(255,255,255,.14); margin: 0 6px; }
+
+  .index {
+    position: fixed; inset: 0; z-index: 70; display: none; overflow-y: auto;
+    background: rgba(8,11,22,.94); backdrop-filter: blur(8px); color: #EDE6D8; padding: 6vh 6vw;
+  }
+  .index.open { display: block; }
+  .index h2 { font: 600 clamp(28px, 3vw, 48px)/1 var(--serif); margin: 0 0 3vh; color: var(--gold); }
+  .index ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px 28px; }
+  .index button {
+    width: 100%; text-align: left; border: 0; background: transparent; color: inherit; cursor: pointer;
+    padding: 10px 12px; border-radius: 8px; display: flex; gap: 14px; font: 400 clamp(15px, 1.2vw, 20px)/1.3 var(--sans);
+  }
+  .index button:hover { background: rgba(255,255,255,.07); }
+  .index button.cur { background: rgba(216,180,106,.16); color: #fff; }
+  .index button span { color: var(--gold); min-width: 2ch; font-variant-numeric: tabular-nums; }
+
+  .progress { position: fixed; left: 0; bottom: 0; height: 3px; background: var(--gold); opacity: .55; z-index: 10; transition: width .6s ease; }
+  .blackout { position: fixed; inset: 0; background: #000; z-index: 80; display: none; }
+  .blackout.on { display: block; }
+  .toast {
+    position: fixed; left: 50%; top: 28px; transform: translate(-50%, -20px); z-index: 90; opacity: 0;
+    padding: 14px 22px; border-radius: 12px; background: rgba(14,18,32,.92); color: #F2EADB;
+    font: 600 16px/1.2 var(--sans); transition: opacity .3s, transform .3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+</style>
+</head>
+<body data-theme="night">
+
+<!-- Ilustrações reutilizáveis -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- 1ª visão: murtas e cavaleiros que percorrem a terra -->
+    <symbol id="v1" viewBox="0 0 240 240">
+      <ellipse cx="120" cy="128" rx="98" ry="98" stroke-dasharray="1 12" opacity=".75"/>
+      <path d="M40 210 C80 200 160 200 200 210"/>
+      <path d="M120 206 C117 170 123 130 120 66"/>
+      <g class="tint">
+        <path d="M120 186 C104 186 94 178 90 168 C104 166 116 172 120 186Z"/>
+        <path d="M120 176 C136 176 146 168 150 158 C136 156 124 162 120 176Z"/>
+        <path d="M120 156 C104 156 94 148 90 138 C104 136 116 142 120 156Z"/>
+        <path d="M120 146 C136 146 146 138 150 128 C136 126 124 132 120 146Z"/>
+        <path d="M120 126 C106 126 98 119 95 110 C107 108 117 114 120 126Z"/>
+        <path d="M120 116 C134 116 142 109 145 100 C133 98 123 104 120 116Z"/>
+        <path d="M120 96 C110 96 104 90 102 83 C111 82 118 86 120 96Z"/>
+        <path d="M120 88 C130 88 136 82 138 75 C129 74 122 78 120 88Z"/>
+      </g>
+      <circle cx="96" cy="196" r="3" fill="currentColor" stroke="none"/>
+      <circle cx="146" cy="186" r="3" fill="currentColor" stroke="none"/>
+      <circle cx="206" cy="80" r="8" fill="#C9574F" stroke="none"/>
+      <circle cx="31" cy="87" r="8" fill="#C08A4E" stroke="none"/>
+      <circle cx="35" cy="177" r="8" fill="#EFE6D4" stroke="none"/>
+      <circle cx="145" cy="33" r="8" fill="#C9574F" stroke="none"/>
+    </symbol>
+
+    <!-- 2ª visão: quatro chifres e o martelo do ferreiro -->
+    <symbol id="v2" viewBox="0 0 240 240">
+      <path d="M24 206 H216"/>
+      <g class="tint">
+        <path d="M34 206 C30 168 40 138 64 116 C56 142 52 172 54 206Z"/>
+        <path d="M78 206 C74 168 84 138 108 116 C100 142 96 172 98 206Z"/>
+        <path d="M122 206 C118 168 128 138 152 116 C144 142 140 172 142 206Z"/>
+        <path d="M166 206 C162 168 172 138 196 116 C188 142 184 172 186 206Z"/>
+      </g>
+      <path d="M38 186 H52 M82 186 H96 M126 186 H140 M170 186 H184" opacity=".6"/>
+      <g transform="rotate(-30 150 52)">
+        <rect class="tint" x="118" y="34" width="64" height="26" rx="4"/>
+        <path d="M150 60 V112"/>
+      </g>
+      <path d="M100 40 L86 34 M104 26 L94 14 M116 20 L114 6"/>
+    </symbol>
+
+    <!-- 3ª visão: cidade sem muralhas, cercada por um muro de fogo -->
+    <symbol id="v3" viewBox="0 0 240 240">
+      <circle cx="120" cy="124" r="92" stroke-dasharray="3 9" opacity=".6"/>
+      <g fill="currentColor" stroke="none" opacity=".9">
+        <path transform="translate(120 32)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+        <path transform="translate(185 59) rotate(45)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+        <path transform="translate(212 124) rotate(90)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+        <path transform="translate(185 189) rotate(135)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+        <path transform="translate(120 216) rotate(180)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+        <path transform="translate(55 189) rotate(225)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+        <path transform="translate(28 124) rotate(270)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+        <path transform="translate(55 59) rotate(315)" d="M0 10 C-7 2 -4 -6 0 -14 C4 -6 7 2 0 10Z"/>
+      </g>
+      <path d="M62 168 H202"/>
+      <g class="tint">
+        <path d="M74 168 V138 L89 124 L104 138 V168Z"/>
+        <path d="M110 168 V122 L134 100 L158 122 V168Z"/>
+        <path d="M162 168 V142 L176 128 L190 142 V168Z"/>
+      </g>
+      <path d="M128 168 V148 H140 V168"/>
+      <path d="M84 146 h10 M168 150 h10"/>
+    </symbol>
+
+    <!-- 4ª visão: vestes novas e a mitra do sacerdote -->
+    <symbol id="v4" viewBox="0 0 240 240">
+      <path class="tint" d="M94 70 C90 44 104 28 120 28 C136 28 150 44 146 70Z"/>
+      <path d="M95 58 H145"/>
+      <rect x="110" y="60" width="20" height="7" rx="2" fill="currentColor" stroke="none"/>
+      <path class="tint" d="M92 86 H148 L178 118 L164 130 L152 116 L160 212 H80 L88 116 L76 130 L62 118 Z"/>
+      <path d="M108 86 Q120 102 132 86"/>
+      <path d="M86 150 H154"/>
+      <path d="M44 60 V76 M36 68 H52"/>
+      <path d="M196 54 V66 M190 60 H202"/>
+      <path d="M200 170 V182 M194 176 H206"/>
+    </symbol>
+
+    <!-- 5ª visão: candelabro e duas oliveiras -->
+    <symbol id="v5" viewBox="0 0 240 240">
+      <path d="M14 206 H226"/>
+      <path d="M120 64 V190"/>
+      <path d="M102 64 A18 18 0 0 0 138 64"/>
+      <path d="M84 64 A36 36 0 0 0 156 64"/>
+      <path d="M66 64 A54 54 0 0 0 174 64"/>
+      <path class="tint" d="M100 206 H140 L130 190 H110Z"/>
+      <path d="M60 64 H72 M78 64 H90 M96 64 H108 M114 64 H126 M132 64 H144 M150 64 H162 M168 64 H180"/>
+      <g fill="currentColor" stroke="none">
+        <path transform="translate(66 54)" d="M0 6 C-4 1 -2 -4 0 -9 C2 -4 4 1 0 6Z"/>
+        <path transform="translate(84 54)" d="M0 6 C-4 1 -2 -4 0 -9 C2 -4 4 1 0 6Z"/>
+        <path transform="translate(102 54)" d="M0 6 C-4 1 -2 -4 0 -9 C2 -4 4 1 0 6Z"/>
+        <path transform="translate(120 54)" d="M0 6 C-4 1 -2 -4 0 -9 C2 -4 4 1 0 6Z"/>
+        <path transform="translate(138 54)" d="M0 6 C-4 1 -2 -4 0 -9 C2 -4 4 1 0 6Z"/>
+        <path transform="translate(156 54)" d="M0 6 C-4 1 -2 -4 0 -9 C2 -4 4 1 0 6Z"/>
+        <path transform="translate(174 54)" d="M0 6 C-4 1 -2 -4 0 -9 C2 -4 4 1 0 6Z"/>
+        <circle cx="26" cy="120" r="3"/><circle cx="38" cy="134" r="3"/><circle cx="30" cy="144" r="3"/><circle cx="40" cy="114" r="3"/>
+        <circle cx="214" cy="120" r="3"/><circle cx="202" cy="134" r="3"/><circle cx="210" cy="144" r="3"/><circle cx="200" cy="114" r="3"/>
+      </g>
+      <path d="M30 206 C32 186 26 170 32 156"/>
+      <ellipse class="tint" cx="32" cy="128" rx="22" ry="28"/>
+      <path d="M210 206 C208 186 214 170 208 156"/>
+      <ellipse class="tint" cx="208" cy="128" rx="22" ry="28"/>
+      <path d="M54 118 C68 100 84 84 100 76" stroke-dasharray="2 7"/>
+      <path d="M186 118 C172 100 156 84 140 76" stroke-dasharray="2 7"/>
+    </symbol>
+
+    <!-- 6ª visão: o rolo voador -->
+    <symbol id="v6" viewBox="0 0 240 240">
+      <path class="tint" d="M44 84 H196 V156 H44Z"/>
+      <ellipse cx="44" cy="120" rx="10" ry="42"/>
+      <ellipse cx="196" cy="120" rx="10" ry="42"/>
+      <path d="M70 104 H170 M70 120 H170 M70 136 H146"/>
+      <path d="M8 96 H24 M2 120 H22 M8 144 H24"/>
+    </symbol>
+
+    <!-- 7ª visão: a mulher no efa levada para longe -->
+    <symbol id="v7" viewBox="0 0 240 240">
+      <ellipse class="tint" cx="120" cy="120" rx="44" ry="8"/>
+      <path class="tint" d="M78 122 L88 200 H152 L162 122"/>
+      <path d="M82 148 H158 M85 174 H155"/>
+      <path d="M104 128 L106 200 M136 128 L134 200"/>
+      <path d="M100 108 C82 82 56 72 30 78 C50 88 66 98 80 114"/>
+      <path d="M140 108 C158 82 184 72 210 78 C190 88 174 98 160 114"/>
+      <path d="M66 220 C100 214 140 214 174 220" opacity=".5"/>
+    </symbol>
+
+    <!-- 8ª visão: carros entre os montes de bronze, rumo aos quatro ventos -->
+    <symbol id="v8" viewBox="0 0 240 240">
+      <path d="M8 200 H232"/>
+      <path class="tint" d="M8 200 L56 90 L74 122 L96 200Z"/>
+      <path class="tint" d="M144 200 L166 122 L184 90 L232 200Z"/>
+      <path d="M40 160 L52 166 M60 140 L70 148 M190 140 L180 148 M200 160 L188 166" opacity=".55"/>
+      <circle cx="120" cy="178" r="20"/>
+      <path d="M120 158 V198 M100 178 H140 M106 164 L134 192 M134 164 L106 192"/>
+      <circle cx="120" cy="178" r="3" fill="currentColor" stroke="none"/>
+      <path d="M120 24 V72 M96 48 H144"/>
+      <path d="M114 30 L120 24 L126 30 M114 66 L120 72 L126 66 M102 42 L96 48 L102 54 M138 42 L144 48 L138 54"/>
+    </symbol>
+
+    <!-- Cruz e chama -->
+    <symbol id="emblem" viewBox="0 0 100 100">
+      <path d="M44 92 C24 83, 16 64, 26 44 C31 34, 38 27, 40 16 C43 29, 38 41, 41 53 C43 62, 47 72, 44 92 Z" fill="#C8372D"/>
+      <path d="M47 92 C33 84, 28 68, 35 53 C39 45, 44 39, 45 30 C48 40, 44 49, 46 59 C48 67, 50 76, 47 92 Z" fill="#E9A23B"/>
+      <rect x="52" y="8" width="11" height="84" rx="2.5" fill="currentColor"/>
+      <rect x="30" y="28" width="54" height="11" rx="2.5" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="deck" id="deck">
+
+  <!-- 1 · Abertura -->
+  <section class="slide night title-slide" data-title="Abertura" data-nofolio>
+    <figure class="bgimg" data-img="imagens/abertura"></figure>
+    <div class="stars"></div>
+    <div class="moon"></div>
+    <div class="kicker rise">Escola Dominical · Estudo 14</div>
+    <h1 class="display rise" style="--i:1">Zacarias</h1>
+    <p class="subtitle rise" style="--i:2">Visões da restauração</p>
+    <div class="sign rise" style="--i:4"><svg style="color:#F2EADB"><use href="#emblem"/></svg>Igreja Metodista</div>
+  </section>
+
+  <!-- 2 · Dinâmica: imagens -->
+  <section class="slide light" data-title="O que estas imagens dizem?">
+    <div class="kicker rise">Para começar</div>
+    <h2 class="h2 rise" style="--i:1">O que estas imagens dizem?</h2>
+    <div class="symbols">
+      <figure class="symbol rise" style="--i:2" data-reveal>
+        <div class="sym-tile">
+          <!-- Sinal de parada -->
+          <svg viewBox="0 0 160 160">
+            <defs>
+              <linearGradient id="gStop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E5322F"/><stop offset="1" stop-color="#B71C1C"/></linearGradient>
+            </defs>
+            <polygon points="53,6 107,6 154,53 154,107 107,154 53,154 6,107 6,53" fill="#8E1414"/>
+            <polygon points="55,11 105,11 149,55 149,105 105,149 55,149 11,105 11,55" fill="#FFFFFF"/>
+            <polygon points="57,16 103,16 144,57 144,103 103,144 57,144 16,103 16,57" fill="url(#gStop)"/>
+            <g fill="#FFFFFF">
+              <rect x="58" y="44" width="11" height="44" rx="5.5"/>
+              <rect x="70.5" y="34" width="11" height="52" rx="5.5"/>
+              <rect x="83" y="37" width="11" height="50" rx="5.5"/>
+              <rect x="95.5" y="47" width="10" height="42" rx="5"/>
+              <rect x="57" y="70" width="49" height="50" rx="18"/>
+              <rect x="40" y="76" width="11" height="34" rx="5.5" transform="rotate(-38 46 93)"/>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="f">Pare</figcaption>
+      </figure>
+      <figure class="symbol rise" style="--i:3" data-reveal>
+        <div class="sym-tile">
+          <!-- Bateria em economia de energia -->
+          <svg viewBox="0 0 160 160">
+            <rect x="14" y="48" width="118" height="64" rx="16" fill="#FFFFFF" stroke="#2B2B2B" stroke-width="7"/>
+            <path d="M138 68 h6 a6 6 0 0 1 6 6 v12 a6 6 0 0 1 -6 6 h-6 z" fill="#2B2B2B"/>
+            <rect x="24" y="58" width="30" height="44" rx="8" fill="#F5B400"/>
+            <path d="M88 56 L70 84 H84 L78 104 L100 74 H86 L94 56 Z" fill="#2B2B2B" opacity=".14"/>
+          </svg>
+        </div>
+        <figcaption class="f">Bateria fraca</figcaption>
+      </figure>
+      <figure class="symbol rise" style="--i:4" data-reveal>
+        <div class="sym-tile">
+          <!-- Piso molhado -->
+          <svg viewBox="0 0 160 160">
+            <path d="M80 10 L152 138 H8 Z" fill="#FFC20E" stroke="#151515" stroke-width="8" stroke-linejoin="round"/>
+            <g stroke="#151515" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <circle cx="92" cy="50" r="9" fill="#151515" stroke="none"/>
+              <path d="M86 64 L72 92" stroke-width="10"/>
+              <path d="M84 70 L104 62" stroke-width="7"/>
+              <path d="M80 74 L62 70" stroke-width="7"/>
+              <path d="M72 92 L92 104 L108 98" stroke-width="8"/>
+              <path d="M72 92 L60 112" stroke-width="8"/>
+              <path d="M34 124 q7 -6 14 0 t14 0 t14 0 t14 0 t14 0 t14 0" stroke="#0E6BA8" stroke-width="5"/>
+            </g>
+          </svg>
+        </div>
+        <figcaption class="f">Piso molhado</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 3–5 · Dinâmica: textos -->
+  <section class="slide light" data-title="Aviso 1 · Trânsito">
+    <div class="dense-meta rise"><div class="kicker">Trânsito</div><div class="ref">1 / 3</div></div>
+    <p class="dense rise" style="--i:1" data-z>“Ao aproximar-se de uma interseção circular não semaforizada, o condutor deve reduzir gradualmente a velocidade de deslocamento e ceder a preferência de passagem aos veículos que já se encontram circulando no anel viário interno antes de ingressar na faixa.”</p>
+  </section>
+
+  <section class="slide light" data-title="Aviso 2 · Carregador">
+    <div class="dense-meta rise"><div class="kicker">Celular</div><div class="ref">2 / 3</div></div>
+    <p class="dense rise" style="--i:1" data-z>“Durante o processo de transferência de corrente elétrica contínua para o acumulador do aparelho celular, é normal observar a dissipação moderada de energia térmica na fonte transformadora; contudo, caso a temperatura ultrapasse o limite seguro ao toque, recomenda-se desconectar o cabo da rede elétrica.”</p>
+  </section>
+
+  <section class="slide light" data-title="Aviso 3 · Elevador">
+    <div class="dense-meta rise"><div class="kicker">Elevador</div><div class="ref">3 / 3</div></div>
+    <p class="dense rise" style="--i:1" data-z>“Para preservar a integridade estrutural dos cabos de tração e o funcionamento adequado dos freios de segurança da cabine, solicita-se aos usuários que respeitem rigorosamente a carga máxima homologada de seiscentos quilogramas ou o limite de oito passageiros simultâneos.”</p>
+  </section>
+
+  <!-- 6 · Por que visões -->
+  <section class="slide night" data-title="Deus falou por imagens">
+    <figure class="panel" data-img="imagens/profeta-visao"></figure>
+    <div class="stars"></div>
+    <div style="max-width:1400px">
+      <div class="kicker rise">Judá, 520 a.C.</div>
+      <h2 class="h2 rise fs" style="--i:1; --fs:120px; --fsp:104px">Deus falou por imagens</h2>
+      <p class="lead rise" style="--i:2; color:var(--fg2)" data-z>O povo estava cansado: colheitas fracas, o Templo em ruínas, o ânimo no fim. Palavras comuns já não alcançavam.</p>
+      <hr class="rule f">
+      <p class="lead f" style="color:var(--fg2)" data-z>Por meio de <strong>oito visões noturnas</strong>, Zacarias despertou a fé — chamando o povo à purificação, à reconstrução do Templo e ao amor ao próximo.</p>
+    </div>
+  </section>
+
+  <!-- 7 · Parte I -->
+  <section class="slide light divider center" data-title="Parte I · O livro e o profeta" data-nofolio>
+    <div class="numeral rise">Parte I</div>
+    <h1 class="h1 rise" style="--i:1">O livro e o profeta</h1>
+    <p class="lead muted rise" style="--i:2">Zacarias 1–8 · 520–518 a.C.</p>
+  </section>
+
+  <!-- 8 · Estrutura -->
+  <section class="slide light" data-title="Estrutura de Zacarias 1–8">
+    <div class="kicker rise">Zacarias 1–8</div>
+    <h2 class="h2 rise" style="--i:1; margin-bottom:34px">Uma estrutura do livro</h2>
+    <ol class="toc">
+      <li class="rise" style="--i:2" data-z><span class="ref"><button class="vr" data-ref="zec 1:1-17">1.1–17</button></span><span class="t">O Senhor está zelando por seu povo</span>
+        <template class="zd"><h3>O Senhor está zelando por seu povo</h3><p>O livro começa com um apelo à conversão, lembrando os antepassados — primeiro impenitentes, depois arrependidos (1.1–6). Na primeira visão, o anjo garante que Deus tem grande zelo por Jerusalém: a cidade será consolada e o Templo, reconstruído.</p><p><button class="vr" data-ref="zec 1:1-17">Zacarias 1.1–17</button></p></template></li>
+      <li class="rise" style="--i:3" data-z><span class="ref"><button class="vr" data-ref="zec 2:1-13">2.1–13</button></span><span class="t">Israel exortada a voltar para Sião</span>
+        <template class="zd"><h3>Israel exortada a voltar para Sião</h3><p>As muralhas não construídas mostram a grandiosidade da Jerusalém futura (2.1–5). Em seguida, um apelo aos exilados para saírem da Babilônia, e a afirmação de que os povos pagãos terão parte na salvação de Deus (2.6–13).</p><p><button class="vr" data-ref="zec 2:1-13">Zacarias 2.1–13</button></p></template></li>
+      <li class="rise" style="--i:4" data-z><span class="ref"><button class="vr" data-ref="zec 3:1-4:14">3.1–4.14</button></span><span class="t">Harmonia entre o poder civil e o poder religioso</span>
+        <template class="zd"><h3>Harmonia entre o poder civil e o religioso</h3><p>O sumo sacerdote Josué, representando o povo, recebe o perdão diante do tribunal divino (cap. 3). O candelabro e as duas oliveiras mostram Zorobabel e Josué, “os dois ungidos”, lado a lado (cap. 4).</p><p><button class="vr" data-ref="zec 3:1-4:14">Zacarias 3.1–4.14</button></p></template></li>
+      <li class="rise" style="--i:5" data-z><span class="ref"><button class="vr" data-ref="zec 5:1-11">5.1–11</button></span><span class="t">Procura-se sinceridade no louvor</span>
+        <template class="zd"><h3>Procura-se sinceridade no louvor</h3><p>O rolo voador e a mulher no efa: Judá precisa ser purificada do roubo, do falso juramento e de toda culpa. Reconstruir o Templo exige também santidade e ética verdadeira.</p><p><button class="vr" data-ref="zec 5:1-11">Zacarias 5.1–11</button></p></template></li>
+      <li class="rise" style="--i:6" data-z><span class="ref"><button class="vr" data-ref="zec 6:1-15">6.1–15</button></span><span class="t">O Renovo do Senhor</span>
+        <template class="zd"><h3>O Renovo do Senhor</h3><p>A oitava visão reafirma o juízo divino sobre a terra do norte (6.1–8). Depois, a coroação simbólica aponta para o “Renovo”, que edificará o Templo do Senhor (6.9–15).</p><p><button class="vr" data-ref="zec 6:1-15">Zacarias 6.1–15</button></p></template></li>
+      <li class="rise" style="--i:7" data-z><span class="ref"><button class="vr" data-ref="zec 7:1-14">7.1–14</button></span><span class="t">Procura-se: juízo verdadeiro, bondade e misericórdia</span>
+        <template class="zd"><h3>Juízo verdadeiro, bondade e misericórdia</h3><p>O verdadeiro jejum não consiste apenas em abster-se de alimento, mas na prática do amor aos necessitados — a viúva, o órfão, o estrangeiro, o pobre — e na obediência à Palavra de Deus.</p><p><button class="vr" data-ref="zec 7:1-14">Zacarias 7.1–14</button></p></template></li>
+      <li class="rise" style="--i:8" data-z><span class="ref"><button class="vr" data-ref="zec 8:1-23">8.1–23</button></span><span class="t">A restauração de Sião</span>
+        <template class="zd"><h3>A restauração de Sião</h3><p>Uma coletânea de pequenos discursos sobre Jerusalém restaurada, onde idosos e crianças voltarão a ocupar as praças com paz, alegria e verdade.</p><p><button class="vr" data-ref="zec 8:1-23">Zacarias 8.1–23</button></p></template></li>
+    </ol>
+  </section>
+
+  <!-- 9 · Nome -->
+  <section class="slide light center name-slide" data-title="Quem foi Zacarias">
+    <figure class="panel" data-img="imagens/zacarias"></figure>
+    <div class="kicker rise">Quem foi Zacarias</div>
+    <div class="hebrew rise fs" style="--i:1; --fs:150px; --fsp:120px">זְכַרְיָה</div>
+    <h1 class="display rise fs" style="--i:2; --fs:190px; --fsp:136px">“Javé lembra-se”</h1>
+    <hr class="rule rise" style="--i:3">
+    <p class="lead rise" style="--i:4" data-z>Filho de Berequias, neto de Ido · contemporâneo de Ageu</p>
+    <p class="ref rise" style="--i:5; margin-top:14px"><button class="vr" data-ref="zec 1:1">Zc 1.1</button> · <button class="vr" data-ref="ezr 5:1">Ed 5.1</button> · <button class="vr" data-ref="ezr 6:14">Ed 6.14</button></p>
+    <p class="lead muted f" style="margin-top:56px; font-style:italic" data-z>Para um povo que se sentia esquecido, o próprio nome do profeta já era uma mensagem.</p>
+  </section>
+
+  <!-- 10 · Sacerdote -->
+  <section class="slide light" data-title="Um profeta sacerdote">
+    <div class="kicker rise">Quem foi Zacarias · <button class="vr" data-ref="neh 12:12-16">Ne 12.16</button></div>
+    <h2 class="h2 rise" style="--i:1">Um profeta de família sacerdotal</h2>
+    <div class="cards">
+      <article class="card rise" style="--i:2" data-z>
+        <div class="n">01</div>
+        <h3 class="h3">O Templo</h3>
+        <p>Preocupação constante com a casa de Deus.</p>
+        <div class="ref"><button class="vr" data-ref="zec 1:16">1.16</button> · <button class="vr" data-ref="zec 4:9">4.9</button> · <button class="vr" data-ref="zec 6:12-13">6.12s</button></div>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">Marca sacerdotal · 01</div><h3>O Templo</h3><p>Zacarias se preocupa constantemente com a casa de Deus: ela será reconstruída, e Zorobabel, que lançou os alicerces, também a terminará.</p><p><button class="vr" data-ref="zec 1:16">Zc 1.16</button> · <button class="vr" data-ref="zec 4:9">4.9</button> · <button class="vr" data-ref="zec 6:12-13">6.12–13</button></p></template>
+      </article>
+      <article class="card rise" style="--i:3" data-z>
+        <div class="n">02</div>
+        <h3 class="h3">Josué</h3>
+        <p>O sacerdote recebe autoridade igual à de Zorobabel.</p>
+        <div class="ref"><button class="vr" data-ref="zec 3:7">3.7</button> · <button class="vr" data-ref="zec 4:14">4.14</button></div>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">Marca sacerdotal · 02</div><h3>Josué</h3><p>O sumo sacerdote Josué é tido como igual em autoridade a Zorobabel, o governador: são “os dois ungidos” que estão diante do Senhor.</p><p><button class="vr" data-ref="zec 3:7">Zc 3.7</button> · <button class="vr" data-ref="zec 4:14">4.14</button></p></template>
+      </article>
+      <article class="card rise" style="--i:4" data-z>
+        <div class="n">03</div>
+        <h3 class="h3">O culto</h3>
+        <p>Interesse pelas questões rituais, como o jejum.</p>
+        <div class="ref"><button class="vr" data-ref="zec 7:1-3">7.1ss</button> · <button class="vr" data-ref="zec 8:18-19">8.18s</button></div>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">Marca sacerdotal · 03</div><h3>O culto</h3><p>Zacarias se interessa pelas questões rituais — como os jejuns que o povo guardava em memória da destruição de Jerusalém.</p><p><button class="vr" data-ref="zec 7:1-3">Zc 7.1–3</button> · <button class="vr" data-ref="zec 8:18-19">8.18–19</button></p></template>
+      </article>
+    </div>
+    <p class="lead f" style="margin-top:60px" data-z>As visões e a rica simbologia fazem de Zacarias um <strong>precursor do gênero apocalíptico</strong>.</p>
+  </section>
+
+  <!-- 11 · Contando o tempo -->
+  <section class="slide light" data-title="Como contamos o tempo" style="padding-top:96px; padding-bottom:90px">
+    <div class="kicker rise">Antes e depois de Cristo</div>
+    <h2 class="h2 rise" style="--i:1; margin-bottom:10px">Como contamos o tempo</h2>
+    <svg class="vchart rise" style="--i:2" viewBox="0 0 1600 600">
+      <text class="era" x="420" y="30">ANTES DE CRISTO · a.C.</text>
+      <text class="era-s" x="420" y="66">os anos diminuem</text>
+      <text class="era" x="1180" y="30">DEPOIS DE CRISTO · d.C.</text>
+      <text class="era-s" x="1180" y="66">os anos aumentam</text>
+      <line class="axis" x1="60" y1="500" x2="1540" y2="500"/>
+      <g>
+        <line class="tick" x1="80" y1="492" x2="80" y2="508"/><text class="tick-l" x="80" y="542">1000</text>
+        <line class="tick" x1="224" y1="492" x2="224" y2="508"/><text class="tick-l" x="224" y="542">800</text>
+        <line class="tick" x1="368" y1="492" x2="368" y2="508"/><text class="tick-l" x="368" y="542">600</text>
+        <line class="tick" x1="512" y1="492" x2="512" y2="508"/><text class="tick-l" x="512" y="542">400</text>
+        <line class="tick" x1="656" y1="492" x2="656" y2="508"/><text class="tick-l" x="656" y="542">200</text>
+        <line class="tick" x1="944" y1="492" x2="944" y2="508"/><text class="tick-l" x="944" y="542">200</text>
+        <line class="tick" x1="1088" y1="492" x2="1088" y2="508"/><text class="tick-l" x="1088" y="542">400</text>
+        <line class="tick" x1="1232" y1="492" x2="1232" y2="508"/><text class="tick-l" x="1232" y="542">600</text>
+        <line class="tick" x1="1376" y1="492" x2="1376" y2="508"/><text class="tick-l" x="1376" y="542">800</text>
+        <line class="tick" x1="1520" y1="492" x2="1520" y2="508"/><text class="tick-l" x="1520" y="542">1000</text>
+        <text class="tick-l" x="368" y="585" style="font-size:22px; letter-spacing:.2em">a.C.</text>
+        <text class="tick-l" x="1232" y="585" style="font-size:22px; letter-spacing:.2em">d.C.</text>
+      </g>
+      <path class="vline" pathLength="1" d="M80 120 L800 470 L1520 120"/>
+      <g class="f">
+        <circle class="dot" cx="80" cy="120" r="13"/>
+        <text class="ev-y" x="112" y="112">c. 1000 a.C.</text>
+        <text class="ev-t" x="112" y="154">Davi, rei em Jerusalém</text>
+      </g>
+      <g class="f">
+        <line class="guide" x1="378" y1="265" x2="378" y2="500"/>
+        <circle class="dot" cx="378" cy="265" r="13"/>
+        <text class="ev-y" x="352" y="318" text-anchor="end">586 a.C.</text>
+        <text class="ev-t" x="352" y="360" text-anchor="end">Exílio na Babilônia</text>
+      </g>
+      <g class="f">
+        <line class="guide" x1="426" y1="288" x2="426" y2="500"/>
+        <circle class="dot hl" cx="426" cy="288" r="17"/>
+        <text class="ev-y" x="456" y="238">520 – 515 a.C.</text>
+        <text class="ev-t" x="456" y="280">Zacarias · o Templo</text>
+        <text class="ev-s" x="540" y="320">520 → 518 → 515</text>
+      </g>
+      <g class="f">
+        <circle class="dot jc" cx="800" cy="470" r="17"/>
+        <text class="ev-t" x="800" y="380" text-anchor="middle" style="font-size:46px">Jesus Cristo</text>
+        <text class="ev-s" x="800" y="545" text-anchor="middle" style="font-size:24px">não existe ano zero</text>
+      </g>
+      <g class="f">
+        <circle class="dot" cx="850" cy="446" r="13"/>
+        <text class="ev-y" x="880" y="482">70 d.C.</text>
+        <text class="ev-t" x="990" y="482">Templo destruído pelos romanos</text>
+      </g>
+      <g class="f">
+        <circle class="dot" cx="1520" cy="120" r="13"/>
+        <text class="ev-y" x="1490" y="110" text-anchor="end">1000 d.C.</text>
+      </g>
+    </svg>
+  </section>
+
+  <!-- 12 · Linha do tempo -->
+  <section class="slide light" data-title="Linha do tempo">
+    <div class="kicker rise">Os tempos de Zacarias</div>
+    <h2 class="h2 rise" style="--i:1">520 – 518 a.C.</h2>
+    <div class="timeline">
+      <div class="tl-line"></div>
+      <div class="tl-span rise" style="--i:4"><span>Ministério de Zacarias</span></div>
+      <div class="tl-node rise" style="--i:2" data-z>
+        <div class="tl-year">Ago · 520</div><div class="tl-dot"></div>
+        <div class="tl-text">Ageu começa a pregar</div><span class="ref"><button class="vr" data-ref="hag 1:1">Ag 1.1</button></span>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">Agosto de 520 a.C.</div><h3>Ageu começa a pregar</h3><p>No segundo ano do rei Dario, no sexto mês, a palavra do Senhor vem por meio de Ageu a Zorobabel e a Josué: é hora de reconstruir a casa de Deus.</p><p><button class="vr" data-ref="hag 1:1">Ageu 1.1</button></p></template>
+      </div>
+      <div class="tl-node key rise" style="--i:3" data-z>
+        <div class="tl-year">Out · 520</div><div class="tl-dot"></div>
+        <div class="tl-text">Zacarias inicia seu ministério</div><span class="ref"><button class="vr" data-ref="zec 1:1">Zc 1.1</button></span>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">Outubro / novembro de 520 a.C.</div><h3>Zacarias inicia seu ministério</h3><p>Dois meses depois da primeira pregação de Ageu, no oitavo mês do segundo ano de Dario, a palavra do Senhor vem a Zacarias.</p><p><button class="vr" data-ref="zec 1:1">Zacarias 1.1</button></p></template>
+      </div>
+      <div class="tl-node rise" style="--i:4" data-z>
+        <div class="tl-year">Dez · 520</div><div class="tl-dot"></div>
+        <div class="tl-text">Ageu silencia</div><span class="ref"><button class="vr" data-ref="hag 2:20-23">Ag 2.20</button></span>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">Dezembro de 520 a.C.</div><h3>Ageu silencia</h3><p>É a última mensagem datada de Ageu. Zacarias continuará pregando por mais dois anos depois que o outro profeta silenciou.</p><p><button class="vr" data-ref="hag 2:20-23">Ageu 2.20–23</button></p></template>
+      </div>
+      <div class="tl-node rise" style="--i:5" data-z>
+        <div class="tl-year">518</div><div class="tl-dot"></div>
+        <div class="tl-text">Zacarias segue pregando</div><span class="ref"><button class="vr" data-ref="zec 7:1-3">Zc 7.1</button></span>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">518 a.C.</div><h3>Zacarias segue pregando</h3><p>No quarto ano do rei Dario, Zacarias ainda recebe a palavra do Senhor. Sua mensagem compreende, portanto, os anos de 520 a 518 a.C.</p><p><button class="vr" data-ref="zec 7:1-3">Zacarias 7.1–3</button></p></template>
+      </div>
+      <div class="tl-node goal rise" style="--i:6" data-z>
+        <div class="tl-year">515</div><div class="tl-dot"></div>
+        <div class="tl-text">O Templo é concluído</div><span class="ref"><button class="vr" data-ref="ezr 6:14-15">Ed 6.15</button></span>
+        <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">515 a.C.</div><h3>O Templo é concluído</h3><p>Graças à pregação de Ageu e Zacarias, a casa de Deus é terminada no sexto ano do rei Dario.</p><p><button class="vr" data-ref="ezr 6:14-15">Esdras 6.14–15</button></p></template>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · Crise e esperança -->
+  <section class="slide light" data-title="Um país cansado">
+    <figure class="panel" data-img="imagens/pais-cansado"></figure>
+    <div class="kicker rise">Os tempos de Zacarias</div>
+    <h2 class="h2 rise" style="--i:1">Um país cansado</h2>
+    <ul class="crisis">
+      <li class="rise" style="--i:2" data-z data-zimg="imagens/crise-devastado"><span>País devastado, população definhada</span><em><button class="vr" data-ref="zec 7:7">7.7</button></em>
+        <template class="zd"><h3>País devastado, população definhada</h3><p>Depois do exílio, a terra ainda estava arrasada e o povo, reduzido e enfraquecido.</p><p><button class="vr" data-ref="zec 7:7">Zacarias 7.7</button></p></template></li>
+      <li class="rise" style="--i:3" data-z data-zimg="imagens/crise-colheitas"><span>Colheitas prejudicadas</span><em><button class="vr" data-ref="zec 8:10">8.10</button></em>
+        <template class="zd"><h3>Colheitas prejudicadas</h3><p>Não havia salário para os homens nem para os animais: a falta de sustento apertava as famílias.</p><p><button class="vr" data-ref="zec 8:10">Zacarias 8.10</button></p></template></li>
+      <li class="rise" style="--i:4" data-z data-zimg="imagens/crise-moral"><span>Vida moral precária</span><em><button class="vr" data-ref="zec 3:9">3.9</button> · <button class="vr" data-ref="zec 7:4-7">7.4ss</button></em>
+        <template class="zd"><h3>Vida moral precária</h3><p>Além da crise material, havia injustiça, falta de misericórdia com os mais frágeis e uma religião de rituais vazios.</p><p><button class="vr" data-ref="zec 3:9">Zacarias 3.9</button> · <button class="vr" data-ref="zec 7:4-7">7.4–7</button></p></template></li>
+      <li class="rise" style="--i:5" data-z data-zimg="imagens/crise-impaciencia"><span>Desconforto e impaciência</span><em><button class="vr" data-ref="zec 1:12">1.12</button></em>
+        <template class="zd"><h3>Desconforto e impaciência</h3><p>“Até quando?” — o povo se perguntava quanto tempo ainda duraria aquela situação.</p><p><button class="vr" data-ref="zec 1:12">Zacarias 1.12</button></p></template></li>
+      <li class="rise" style="--i:6" data-z data-zimg="imagens/crise-divisoes"><span>Divisões entre os que voltaram</span><em><button class="vr" data-ref="zec 4:10">4.10</button> · <button class="vr" data-ref="zec 8:10">8.10</button></em>
+        <template class="zd"><h3>Divisões entre os que voltaram</h3><p>Havia brigas e desprezo entre os próprios repatriados que tinham voltado da Babilônia.</p><p><button class="vr" data-ref="zec 4:10">Zacarias 4.10</button> · <button class="vr" data-ref="zec 8:10">8.10</button></p></template></li>
+    </ul>
+    <div class="hope f" data-z data-zimg="imagens/esperanca">Por outro lado, permanece a esperança de restauração.</div>
+  </section>
+
+  <!-- 14 · A mensagem -->
+  <section class="slide light" data-title="A mensagem">
+    <figure class="panel" data-img="imagens/mensagem"></figure>
+    <div class="kicker rise">A mensagem de Zacarias</div>
+    <p class="quote rise fs" style="--i:1; --fs:100px; --fsp:82px; max-width:1500px" data-z>“Voltai-vos a mim… e eu me voltarei a vós.”</p>
+    <div class="ref rise" style="--i:2; margin-top:26px"><button class="vr" data-ref="zec 1:1-6">Zacarias 1.3</button></div>
+    <hr class="rule rise" style="--i:3; margin:54px 0">
+    <div class="cols">
+      <p class="body rise" style="--i:4" data-z>Como Ageu, Zacarias anuncia a reconstrução do Templo e aponta para <strong>Zorobabel</strong>, descendente de Davi — sinal de uma nova era.</p>
+      <p class="body rise" style="--i:5" data-z>O livro abre com um apelo à conversão: os antepassados resistiram, depois se arrependeram <span class="muted">(1.1–6)</span>.</p>
+    </div>
+  </section>
+
+  <!-- 15 · Parte II -->
+  <section class="slide night divider center" data-title="Parte II · As visões noturnas" data-nofolio>
+    <div class="stars"></div>
+    <div class="icon-row">
+      <svg class="art rise" style="--i:1"><use href="#v1"/></svg>
+      <svg class="art rise" style="--i:2"><use href="#v2"/></svg>
+      <svg class="art rise" style="--i:3"><use href="#v3"/></svg>
+      <svg class="art rise" style="--i:4"><use href="#v4"/></svg>
+      <svg class="art rise" style="--i:5"><use href="#v5"/></svg>
+      <svg class="art rise" style="--i:6"><use href="#v6"/></svg>
+      <svg class="art rise" style="--i:7"><use href="#v7"/></svg>
+      <svg class="art rise" style="--i:8"><use href="#v8"/></svg>
+    </div>
+    <div class="numeral rise" style="--i:2">Parte II</div>
+    <h1 class="h1 rise" style="--i:3">As visões noturnas</h1>
+    <p class="lead rise" style="--i:4; color:var(--fg2)"><button class="vr" data-ref="zec 1:7-8">Zacarias 1.7 – 6.8</button></p>
+    <p class="lead f" style="margin-top:50px; font-family:var(--serif); font-style:italic; font-size:60px; color:var(--gold)">Em todas elas, uma certeza: tudo vai dar certo.</p>
+  </section>
+
+  <!-- 16 · 1ª visão -->
+  <section class="slide night vision" data-title="1ª visão · Os cavaleiros">
+    <figure class="panel left" data-img="imagens/visao-1"></figure>
+    <div class="stars"></div><div class="v-num">1</div>
+    <div class="v-grid">
+      <div class="v-art rise"><svg class="art"><use href="#v1"/></svg></div>
+      <div>
+        <div class="v-head rise" style="--i:1"><svg class="art v-badge"><use href="#v1"/></svg><div class="kicker">Primeira visão · <button class="vr" data-ref="zec 1:7-17">Zc 1.7–17</button></div></div>
+        <h2 class="h2 rise" style="--i:2">Os cavaleiros entre as murtas</h2>
+        <p class="body rise" style="--i:3" data-z>Mensageiros percorrem toda a terra e encontram tudo em paz: Dario dominou as rebeliões do império. Ainda assim, Deus está irado contra as nações — e um oráculo anuncia a reconstrução do Templo.
+          <template class="zd"><div class="pop-kicker" style="margin-bottom:30px">Primeira visão</div><h3>Os cavaleiros entre as murtas</h3><p>Mensageiros divinos percorrem toda a terra e certificam-se de que tudo está em paz — Dario, o monarca persa, dominou as rebeliões em seu império. Apesar disso, o anjo garante ao profeta que Deus está irritado contra as nações e que Jerusalém será consolada. Um oráculo sobre a reconstrução do Templo confirma a mensagem.</p><p><button class="vr" data-ref="zec 1:7-17">Zacarias 1.7–17</button></p></template></p>
+        <p class="v-key f">Jerusalém será consolada.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 · 2ª visão -->
+  <section class="slide night vision" data-title="2ª visão · Chifres e ferreiros">
+    <figure class="panel left" data-img="imagens/visao-2"></figure>
+    <div class="stars"></div><div class="v-num">2</div>
+    <div class="v-grid">
+      <div class="v-art rise"><svg class="art"><use href="#v2"/></svg></div>
+      <div>
+        <div class="v-head rise" style="--i:1"><svg class="art v-badge"><use href="#v2"/></svg><div class="kicker">Segunda visão · <button class="vr" data-ref="zec 1:18-21">Zc 1.18–21</button></div></div>
+        <h2 class="h2 rise" style="--i:2">Quatro chifres e quatro ferreiros</h2>
+        <p class="body rise" style="--i:3" data-z>Os chifres representam as nações que dispersaram Judá. Os ferreiros vêm para abatê-los — símbolo do julgamento de Deus.</p>
+        <p class="v-key f">Nenhum opressor tem a última palavra.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 · 3ª visão -->
+  <section class="slide night vision" data-title="3ª visão · Cidade sem muralhas">
+    <figure class="panel left" data-img="imagens/visao-3"></figure>
+    <div class="stars"></div><div class="v-num">3</div>
+    <div class="v-grid">
+      <div class="v-art rise"><svg class="art"><use href="#v3"/></svg></div>
+      <div>
+        <div class="v-head rise" style="--i:1"><svg class="art v-badge"><use href="#v3"/></svg><div class="kicker">Terceira visão · <button class="vr" data-ref="zec 2:1-13">Zc 2.1–13</button></div></div>
+        <h2 class="h2 rise" style="--i:2">Uma cidade sem muralhas</h2>
+        <p class="body rise" style="--i:3" data-z>Jerusalém será grande demais para ser cercada por muros. Os exilados são chamados a deixar a Babilônia, e os povos pagãos terão parte na salvação de Deus.</p>
+        <p class="v-key f">“Serei seu muro de fogo ao redor.” <button class="vr ref" style="font-style:normal" data-ref="zec 2:5">2.5</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 · 4ª visão -->
+  <section class="slide night vision" data-title="4ª visão · Josué">
+    <figure class="panel left" data-img="imagens/visao-4"></figure>
+    <div class="stars"></div><div class="v-num">4</div>
+    <div class="v-grid">
+      <div class="v-art rise"><svg class="art"><use href="#v4"/></svg></div>
+      <div>
+        <div class="v-head rise" style="--i:1"><svg class="art v-badge"><use href="#v4"/></svg><div class="kicker">Quarta visão · <button class="vr" data-ref="zec 3:1-7">Zc 3.1–7</button></div></div>
+        <h2 class="h2 rise" style="--i:2">Josué diante do tribunal</h2>
+        <p class="body rise" style="--i:3" data-z>O sumo sacerdote, representando o povo, está diante do tribunal divino. Suas vestes sujas são trocadas por vestes limpas: o povo recebe o perdão de Deus.</p>
+        <p class="v-key f">A restauração começa pelo perdão.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 · 5ª visão -->
+  <section class="slide night vision" data-title="5ª visão · Candelabro e oliveiras">
+    <figure class="panel left" data-img="imagens/visao-5"></figure>
+    <div class="stars"></div><div class="v-num">5</div>
+    <div class="v-grid">
+      <div class="v-art rise"><svg class="art"><use href="#v5"/></svg></div>
+      <div>
+        <div class="v-head rise" style="--i:1"><svg class="art v-badge"><use href="#v5"/></svg><div class="kicker">Quinta visão · <button class="vr" data-ref="zec 4:1-6;zec 4:10-14">Zc 4.1–14</button></div></div>
+        <h2 class="h2 rise" style="--i:2">O candelabro e as duas oliveiras</h2>
+        <p class="body rise" style="--i:3" data-z>Zorobabel e Josué, “os dois ungidos”, revelam a harmonia entre o poder civil e o poder religioso.</p>
+        <p class="v-key f">Os novos tempos serão fruto do Espírito de Deus — e não da violência.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 · 4.6 -->
+  <section class="slide night center" data-title="Zacarias 4.6">
+    <div class="stars"></div>
+    <div class="kicker rise"><button class="vr" data-ref="zec 4:6">Zacarias 4.6</button></div>
+    <p class="verse rise" style="--i:1" data-z>“Não por força, nem por violência, mas sim por meu espírito, diz o SENHOR dos exércitos.”</p>
+  </section>
+
+  <!-- 22 · 6ª e 7ª visões -->
+  <section class="slide night vision" data-title="6ª e 7ª visões · Rolo e efa">
+    <figure class="panel left" data-img="imagens/visao-6-7"></figure>
+    <div class="stars"></div><div class="v-num">6·7</div>
+    <div class="v-grid">
+      <div class="v-art rise" style="grid-template-columns:1fr 1fr; padding:0 70px; gap:10px">
+        <svg class="art" style="width:250px;height:250px"><use href="#v6"/></svg>
+        <svg class="art" style="width:250px;height:250px"><use href="#v7"/></svg>
+      </div>
+      <div>
+        <div class="v-head rise" style="--i:1"><span class="v-badge duo"><svg class="art"><use href="#v6"/></svg><svg class="art"><use href="#v7"/></svg></span><div class="kicker">Sexta e sétima visões · <button class="vr" data-ref="zec 5:1-11">Zc 5.1–11</button></div></div>
+        <h2 class="h2 rise" style="--i:2">O rolo voador e a mulher no efa</h2>
+        <p class="body rise" style="--i:3" data-z>Um rolo enorme percorre a terra contra o roubo e o falso juramento. A maldade, encerrada num cesto, é levada para longe.</p>
+        <p class="v-key f">Judá é purificada de toda maldade e culpa.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 23 · 8ª visão -->
+  <section class="slide night vision" data-title="8ª visão · Os quatro carros">
+    <figure class="panel left" data-img="imagens/visao-8"></figure>
+    <div class="stars"></div><div class="v-num">8</div>
+    <div class="v-grid">
+      <div class="v-art rise"><svg class="art"><use href="#v8"/></svg></div>
+      <div>
+        <div class="v-head rise" style="--i:1"><svg class="art v-badge"><use href="#v8"/></svg><div class="kicker">Oitava visão · <button class="vr" data-ref="zec 6:1-8">Zc 6.1–8</button></div></div>
+        <h2 class="h2 rise" style="--i:2">Os quatro carros</h2>
+        <p class="body rise" style="--i:3" data-z>Carros saem dentre dois montes de bronze e percorrem a terra. O juízo divino alcança a terra do norte — a Babilônia.</p>
+        <p class="v-key f">Deus reina sobre toda a história.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 24 · Parte III -->
+  <section class="slide light divider center" data-title="Parte III · O que Deus espera" data-nofolio>
+    <div class="numeral rise">Parte III</div>
+    <h1 class="h1 rise" style="--i:1">O que Deus espera</h1>
+    <p class="lead muted rise" style="--i:2">Zacarias 7–8</p>
+  </section>
+
+  <!-- 25 · Jejum -->
+  <section class="slide light" data-title="O verdadeiro jejum">
+    <div class="kicker rise"><button class="vr" data-ref="zec 7:1-14">Zacarias 7</button></div>
+    <h2 class="h2 rise" style="--i:1">O jejum que Deus quer</h2>
+    <div class="contrast">
+      <div class="no rise" style="--i:2" data-z><div class="kicker" style="color:var(--muted)">Não é apenas</div><p>abster-se de alimento</p></div>
+      <div class="yes rise" style="--i:3" data-z><div class="kicker">Mas é</div><p>praticar o amor aos necessitados e obedecer à Palavra de Deus</p></div>
+    </div>
+    <div class="f" data-z>
+      <p class="scripture">“Julgai juízo verdadeiro, e praticai piedade e misericórdia cada um com seu irmão; não oprimais à viúva, nem ao órfão, nem ao estrangeiro, nem ao pobre.”</p>
+      <div class="ref"><button class="vr" data-ref="zec 7:9-10">Zacarias 7.9–10</button></div>
+    </div>
+  </section>
+
+  <!-- 26 · Capítulo 8 -->
+  <section class="slide light" data-title="Jerusalém restaurada">
+    <figure class="panel" data-img="imagens/jerusalem-restaurada"></figure>
+    <div class="kicker rise"><button class="vr" data-ref="zec 8:1-8">Zacarias 8</button></div>
+    <h2 class="h2 rise" style="--i:1">Jerusalém restaurada</h2>
+    <p class="quote rise fs" style="--i:2; --fs:66px; --fsp:54px; max-width:1560px" data-z>“Novamente idosos e idosas se sentarão nas praças de Jerusalém, e cada um terá seu bordão em sua mão… E as ruas da cidade se encherão de meninos e meninas, brincando em suas ruas.”</p>
+    <div class="ref rise" style="--i:3; margin-top:26px"><button class="vr" data-ref="zec 8:4-5">Zacarias 8.4–5</button></div>
+    <p class="body muted f" style="margin-top:54px" data-z>O capítulo 8 reúne pequenos discursos sobre a cidade restaurada: paz, alegria e verdade.</p>
+  </section>
+
+  <!-- 27 · 515 a.C. -->
+  <section class="slide dawn" data-title="515 a.C.">
+    <figure class="panel" data-img="imagens/templo-515"></figure>
+    <div class="big-year rise fs" style="--fs:280px; --fsp:220px">515<small>a.C.</small></div>
+    <h2 class="h2 rise fs" style="--i:1; margin-top:30px; --fs:96px; --fsp:84px">O Templo é reconstruído</h2>
+    <p class="lead rise" style="--i:2; max-width:1450px" data-z>A pregação de Ageu e Zacarias tocou profundamente o povo. Poucos anos depois, a casa de Deus estava de pé outra vez.</p>
+    <div class="ref rise" style="--i:3; margin-top:24px"><button class="vr" data-ref="ezr 6:14-15">Esdras 6.14–15</button></div>
+    <p class="body muted f" style="margin-top:60px; font-size:34px">Os capítulos 9 a 14 pertencem a outra época e serão estudados mais adiante.</p>
+  </section>
+
+  <!-- 28 · Parte IV -->
+  <section class="slide light divider center" data-title="Parte IV · Para reflexão" data-nofolio>
+    <div class="numeral rise">Parte IV</div>
+    <h1 class="h1 rise" style="--i:1">Para reflexão</h1>
+    <p class="lead muted rise" style="--i:2">Em grupo</p>
+  </section>
+
+  <!-- 29 · Pergunta 1 -->
+  <section class="slide light question" data-q="1" data-title="Reflexão · Pergunta 1">
+    <div class="kicker rise">Para reflexão · 1</div>
+    <p class="q-context rise" style="--i:1" data-z>Zacarias encontrou uma linguagem diferente — as visões — para chamar o povo à purificação, à reconstrução do Templo e à prática do amor na obediência à Palavra de Deus.</p>
+    <h2 class="q-main rise" style="--i:2" data-z>Como vocês analisam a linguagem que nós usamos para chamar o povo de Deus à missão?</h2>
+    <div class="answers" data-q="1"></div>
+  </section>
+
+  <!-- 30 · Pergunta 2 -->
+  <section class="slide light question" data-q="2" data-title="Reflexão · Pergunta 2">
+    <div class="kicker rise">Para reflexão · 2</div>
+    <h2 class="q-main rise" style="--i:1; font-size:92px" data-z>Levantem algumas linguagens diferentes que podem servir para a proclamação da Palavra de Deus.</h2>
+    <div class="answers" data-q="2"></div>
+  </section>
+
+  <!-- 31 · Encerramento -->
+  <section class="slide night center" data-title="Encerramento" data-nofolio>
+    <div class="stars"></div>
+    <div class="hebrew rise" style="color:var(--gold)">זְכַרְיָה</div>
+    <h1 class="display rise" style="--i:1; font-style:italic; font-weight:500; font-size:200px">Javé lembra-se.</h1>
+    <hr class="rule rise" style="--i:2">
+    <p class="lead rise" style="--i:3; color:var(--fg2)">Deus não se esquece do seu povo.</p>
+    <div class="sign rise" style="--i:5; position:absolute; bottom:110px; left:0; right:0; justify-content:center">
+      <svg style="color:#F2EADB"><use href="#emblem"/></svg>Igreja Metodista · Escola Dominical
+    </div>
+    <div class="rise" style="--i:6; position:absolute; bottom:56px; left:0; right:0; text-align:center; font:400 18px/1 var(--sans); letter-spacing:.08em; color:var(--muted); opacity:.7">Textos bíblicos: Bíblia Livre (BLIVRE) © Diego Santos, Mario Sérgio e Marco Teles · CC BY 4.0</div>
+  </section>
+
+  <!-- Ampliação -->
+  <div class="pop" id="pop">
+    <div class="pop-card">
+      <div class="pop-top"><div class="pop-kicker" id="popKicker"></div><button class="pop-x" id="popX" title="Fechar (Esc)">×</button></div>
+      <div class="pop-body" id="popBody"></div>
+      <div class="pop-foot">
+        <span class="pop-credit" id="popCredit"></span>
+        <div class="pop-nav" id="popNav"><button id="popPrev">‹</button><span id="popCount"></span><button id="popNext">›</button></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Controles discretos (aparecem ao mover o mouse) -->
+<nav class="dock" id="dock" aria-label="Controles">
+  <button id="bPrev" title="Anterior (←)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <span class="count" id="count">1 / 31</span>
+  <button id="bNext" title="Próximo (→)"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+  <span class="sep"></span>
+  <button id="bAdd" title="Registrar contribuição (N)" hidden><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button id="bIndex" title="Sumário (G)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+  <button id="bCopy" title="Copiar resumo da aula"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+  <button id="bFull" title="Tela cheia (F)"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+</nav>
+
+<div class="index" id="index">
+  <h2>Zacarias — Visões da restauração</h2>
+  <ol id="indexList"></ol>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="blackout" id="blackout"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* Bíblia Livre (BLIVRE) — Diego Santos, Mario Sérgio e Marco Teles, 2018 · CC BY 4.0 · ebible.org/porbr2018 */
+const BIBLE = {"ezr":{"5":{"1":"E o profeta Ageu, e Zacarias filho de Ido, profetas, profetizaram aos judeus que estavam em Judá e em Jerusalém, em nome do Deus de Israel, a eles."},"6":{"14":"E os anciãos dos judeus iam edificando e prosperando, pela profecia do profeta Ageu, e de Zacarias filho de Ido. E edificaram, e terminaram a construção conforme o mandamento do Deus de Israel, e conforme o mandamento de Ciro e de Dario, e de Artaxerxes rei da Pérsia.","15":"E esta casa foi terminada ao terceiro dia do mês de Adar, que era o sexto ano do reinado do rei Dario."}},"neh":{"12":{"12":"E nos dias de Joiaquim os sacerdotes chefes das famílias foram: de Seraías, Meraías; de Jeremias, Hananias;","16":"De Ido, Zacarias; de Ginetom, Mesulão;"}},"hag":{"1":{"1":"No segundo ano segundo do rei Dario, no sexto mês, no primeiro dia do mês, veio a palavra do SENHOR, por meio do profeta Ageu, a Zorobabel filho de Sealtiel, governador de Judá, e a Josué filho de Jeozadaque, sumo sacerdote, dizendo:"},"2":{"20":"E a palavra do SENHOR veio pela segunda vez a Ageu, ao vigésimo quarto [dia] do mês, dizendo:","21":"Fala a Zorobabel, governador de Judá, dizendo: Eu farei tremer os céus e a terra;","22":"E transtornarei o trono dos reinos, e destruirei a força dos reinos das nações; e transtornarei as carruagens, e os que nelas se sentam; e os cavalos e os que neles montam cairão, cada um pela espada de seu irmão.","23":"Naquele dia, diz o SENHOR dos exércitos, eu te tomarei, Zorobabel, filho de Sealtiel, servo meu, diz o SENHOR, e te porei como anel de selar; porque eu te escolhi, diz o SENHOR dos exércitos."}},"zec":{"1":{"1":"No oitavo mês do segundo ano de Dario, a palavra do SENHOR veio ao profeta Zacarias, filho de Berequias, filho de Ido, dizendo:","2":"O SENHOR se irou muito contra vossos pais.","3":"Portanto dize-lhes: Assim diz o SENHOR dos exércitos: Voltai-vos a mim, diz o SENHOR dos exércitos, e eu me voltarei a vós, diz o SENHOR dos exércitos.","4":"E não sejais como vossos pais, aos quais os profetas antigos clamavam, dizendo: Assim diz o SENHOR dos exércitos: Convertei-vos de vossos maus caminhos e de vossos maus atos; porém não escutaram, nem me deram ouvidos, diz o SENHOR.","5":"Onde estão vossos pais? E os profetas, vivem eles para sempre?","6":"Porém quanto às minhas palavras e meus estatutos que havia mandado a meus servos os profetas, não alcançaram a vossos pais? Assim eles, arrependendo-se, diziam: Tal como o SENHOR dos exércitos planejou fazer segundo nossos caminhos e nossos antos, assim ele fez conosco.","7":"No vigésimo quarto dia do décimo primeiro mês (que é o mês de Sebate), no ano segundo de Dario, a palavra do SENHOR veio ao profeta Zacarias, filho de Berequias, filho de Ido, dizendo:","8":"Vi de noite, e eis um homem montado sobre um cavalo vermelho, parado entre as murtas que estavam num vale profundo; e atrás dele estavam cavalos vermelhos, castanhos, e brancos.","9":"E eu disse: Meu senhor, o que são estes? E o anjo que falava comigo me disse: Eu te mostrarei o que estes são.","10":"Então o homem que estava entre os murtas respondeu, dizendo: Estes são os que o SENHOR enviou para andarem pela terra.","11":"E eles responderam ao anjo do SENHOR que estava entre os murtas, e disseram: Nós já andamos pela terra, e eis que toda a terra está tranquila e quieta.","12":"Então o anjo do SENHOR disse: Ó SENHOR dos exércitos, até quando não terás compaixão de Jerusalém e das cidades de Judá, contra as quais ficaste irado estes setenta anos?","13":"E o SENHOR respondeu ao anjo que falava comigo palavras boas, palavras de consolo.","14":"E o anjo que falava comigo me disse: Fala em voz alta, dizendo: Assim diz o SENHOR dos exércitos: Tenho grande zelo por Jerusalém e por Sião;","15":"E tenho muito grande ira contra as nações tranquilas; porque eu estava pouco irado, porém elas pioraram o mal.","16":"Portanto assim diz o SENHOR: Eu me voltarei a Jerusalém com misericórdia; minha casa será reconstruída nela, diz o SENHOR dos exércitos, e a corda de medir será estendida sobre Jerusalém.","17":"Fala em voz alta mais, dizendo: Assim diz o SENHOR dos exércitos: Minhas cidades novamente transbordarão de prosperidade; porque o SENHOR novamente consolará a Sião, e novamente escolherá a Jerusalém.","18":"Depois levantei meus olhos, e olhei, e eis que havia quatro chifres.","19":"E perguntei ao anjo que falava comigo: O que são estes? E ele me disse: Estes são os chifres que dissiparam Judá, a Israel, e Jerusalém.","20":"E o SENHOR me mostrou quatro ferreiros.","21":"Então eu disse: O que estes vêm a fazer? E ele falou, dizendo: Estes são os chifres que dispersaram Judá, de modo que ninguém levantava sua cabeça. Estes [ferreiros] vieram para derrubar os chifres das nações, que levantaram [seus] chifres contra a terra de Judá para dispersá-la."},"2":{"1":"Voltei a levantar meus olhos, e olhei, e eis um homem que tinha em sua mão uma corda de medir.","2":"E eu perguntei: Para onde vais? E ele me respondeu: Vou medir a Jerusalém, para ver quanta é sua largura e quanto é o seu comprimento.","3":"E eis que o anjo que falava comigo saiu, e outro anjo veio ao seu encontro,","4":"E disse-lhe: Corre, fala a este rapaz, dizendo: Jerusalém será habitada sem muros por causa da multidão de pessoas e de animais que estarão no meio dela.","5":"E eu, diz o SENHOR, serei seu muro de fogo ao redor, e serei [sua] glória no meio dela.","6":"Ei! Ei! Fugi agora da terra do norte, diz o SENHOR, Porque eu vos espalhei pelos quatro ventos dos céu, diz o SENHOR.","7":"Ei Sião! Escapa-te tu, que habitas com a filha da Babilônia.","8":"Porque assim diz o SENHOR dos exércitos: Foi por causa da glória que ele me enviou às nações que vos despojaram; porque quem vos toca, toca a menina de seu olho.","9":"Pois eis que levantarei minha mão contra eles, e serão saqueados por seus [próprios] servos, e sabereis que o SENHOR dos exércitos me enviou.","10":"Canta e alegra-te, ó filha de Sião; porque eis que venho, e habitarei no meio de ti, diz o SENHOR.","11":"E naquele dia muitas nações se ajuntarão ao SENHOR, e serão meu povo, e habitarei no meio de ti; e saberás que o SENHOR dos exércitos me enviou a ti.","12":"E o SENHOR herdará a Judá como sua propriedade na terra santa, e novamente escolherá a Jerusalém.","13":"Calem-se todos diante do SENHOR, porque ele se levantou de sua santa morada."},"3":{"1":"Depois ele me mostrou o sumo sacerdote Josué, que estava diante do anjo do SENHOR; e Satanás estava à sua direita para o acusar.","2":"Mas o SENHOR disse a Satanás: O SENHOR te repreenda, Satanás; o SENHOR, que escolheu a Jerusalém, te repreenda. Não é este [homem] um tição tirado do fogo?","3":"E Josué estava vestido com roupas impuras enquanto estava diante do anjo.","4":"Então [o anjo] falou aos que estavam diante de dele, dizendo: Tirai dele essas roupas impuras. E a ele disse: Eis que tirei de ti tua perversidade, e te vestirei de roupas refinadas.","5":"Depois disse: Ponham um turbante limpo sobre sua cabeça. E puseram um turbante limpo sobre sua cabeça, e puseram-lhe roupas, enquanto o anjo do SENHOR estava [junto] .","6":"E o anjo do SENHOR exortou a Josué, dizendo:","7":"Assim diz o SENHOR dos exércitos: Se andares em meus caminhos, e guardares minha ordenança, também tu julgarás minha casa e guardarás meus pátios; e te darei passagem entre os que [aqui] estão.","8":"Ouvi, pois, Josué sumo sacerdote, tu, e teus colegas que se sentam diante de ti; porque são um sinal; pois eis que eu trarei a meu servo, o Renovo.","9":"Porque eis que, quanto à pedra que pus diante de Josué, sobre esta pedra há sete olhos; eis que gravarei nela uma inscrição, diz o SENHOR dos exércitos, e tirarei a injustiça desta terra em um dia.","10":"Naquele dia, diz o SENHOR dos exércitos, cada um de vós convidará a seu próximo para debaixo da videira, e para debaixo da figueira."},"4":{"1":"E o anjo que falava comigo voltou e me despertou, tal como se desperta um homem de seu sono.","2":"E ele me disse: O que vês? E eu respondi: Eis que vejo um castiçal de ouro maciço, com um recipiente de azeite sobre seu topo, e sete lâmpadas sobre ele; e cada uma das sete lâmpadas tinha um tubo em seu topo;","3":"E duas oliveiras junto a ele, uma à direita do recipiente, e uma à esquerda.","4":"E eu perguntei ao anjo que falava comigo, dizendo: Meu senhor, o que é isto?","5":"E o anjo que falava comigo respondeu dizendo: Tu não sabes que é isto? E eu disse: Não, meu senhor.","6":"E ele falou comigo, dizendo: Esta é palavra do SENHOR a Zorobabel, que diz: Não [se fará] por força, nem por violência, mas sim por meu espírito, diz o SENHOR dos exércitos.","7":"Quem és tu, montanha grande? Diante de Zorobabel se tornarás em planície; ele trará a pedra angular com gritos de: Graça! graça seja!","8":"E palavra do SENHOR veio a mim, dizendo:","9":"As mãos de Zorobabel fundaram esta casa; também suas mãos a completarão, para que saibais que o SENHOR dos exércitos me enviou até vós.","10":"Pois quem despreza o dia das pequenas coisas? Pois esses sete se alegrarão ao verem o prumo na mão de Zorobabel (esses são os olhos do SENHOR, que percorrem toda a terra).","11":"E eu respondi, perguntando: O que são as duas oliveiras à direita e à esquerda do castiçal?","12":"E também lhe perguntei: O que são aqueles dois ramos de oliveiras que estão de lado dos dois tubos de ouro que derramam [azeite] dourado?","13":"E ele falou comigo, dizendo: Tu não sabes o que é isto? E eu disse: Não, meu senhor.","14":"Então ele disse: Estes são os dois ungidos que estão diante do Senhor de toda a terra."},"5":{"1":"E outra vez levantei meus olhos, e olhei, e eis um rolo que voava.","2":"E ele me perguntou: O que vês? E eu disse: Vejo um rolo que voa, cujo comprimento é de vinte, e sua largura de dez côvados.","3":"Então me disse: Esta é a maldição que sairá por toda a face da terra, porque qualquer um que furtar (conforme está de um lado do [rolo] ) será removido; e todo aquele que jura [falsamente] , (conforme está do outro lado do [rolo] ) será removido.","4":"Eu a mando,diz o SENHOR dos exércitos, para que venha à casa do ladrão, e à casa do que jura falsamente pelo meu nome; e fique no meio de sua casa, e a destrua com suas colunas e suas pedras.","5":"E o anjo que falava comigo veio e me disse: Levanta agora teus olhos, e vê o que é que está chegando.","6":"E eu perguntei: O que é isto? E ele disse: Isto é um cesto de medir que está saindo.E disse mais: Este é o olho deles em toda a terra.","7":"E eis que uma tampa de chumbo foi levantada, e uma mulher estava sentada no meio do cesto.","8":"E ele disse: Esta é a Perversidade. E a lançou dentro do cesto, e lançou o peso de chumbo em sua abertura.","9":"E levantei meus olhos, e vi, e eis que duas mulheres saíram, e havia vento sob suas asas (pois tinham asas como de cegonha), e levantaram o cesto entre a terra e o céu.","10":"Então eu disse ao anjo que falava comigo: Para onde elas estão levando o cesto?","11":"E ele me respondeu: Para lhe edificarem uma casa na terra de Sinar e, quando estiver pronta, e seja posto em sua base."},"6":{"1":"E outra vez levantei meus olhos, e vi, e eis que quatro carruagens saíram dentre dois montes, e estes montes eram montes de bronze.","2":"Na primeira carruagem havia cavalos vermelhos, e na segunda carruagem cavalos pretos,","3":"E na terceira carruagem cavalos brancos, e na quarto carruagem cavalos malhados. E [os cavalos] eram fortes.","4":"E perguntei ao anjo que falava comigo: O que é isto, meu senhor?","5":"E o anjo me respondeu: Estes são os quatro espíritos dos céus, que saem de onde estavam diante do Senhor de toda a terra.","6":"A [carruagem] em que estão os cavalos pretos vai para a terra do norte; os brancos vão atrás deles, e os malhados vão para a terra do sul.","7":"E os fortes [cavalos] saíram, e procuraram ir a andarem pela terra. E ele disse: Ide, andai pela terra. E eles andaram pela terra.","8":"E ele me chamou, e falou comigo, dizendo: Eis que aqueles que foram para a terra do norte fizeram descansar meu Espírito na terra do norte.","9":"E a palavra do SENHOR veio a mim, dizendo:","10":"Toma dos que foram levados cativos: Heldai, e de Tobias, e de Jedaías, que voltaram da Babilônia; e naquele mesmo dia vem, e entra na casa de Josias, filho de Sofonias;","11":"Toma prata e ouro, e faze coroas, e põe sobre a cabeça do sumo sacerdote Josué, filho de Jeozadaque;","12":"E fala com ele, dizendo: Assim diz o SENHOR dos exércitos: Eis aqui o homem cujo nome é Renovo; ele brotará de seu lugar, e edificará o templo do SENHOR;","13":"Ele mesmo edificará o templo do SENHOR, e levará sobre si majestade; e se sentará e dominará em seu trono, e será sacerdote em seu trono; e haverá conselho de paz entre ambos.","14":"E as coroas serão para Helem, Tobias, e Jedaías, e Hem, filho de Sofonias, como memorial no templo do SENHOR.","15":"E os que estão longe virão e participarão da construção do templo do SENHOR, e vós sabereis que o SENHOR dos exércitos me enviou a vós. Isto acontecerá se verdadeiramente ouvirdes à voz do SENHOR vosso Deus."},"7":{"1":"Aconteceu, pois, no quarto ano do rei Dario, que a palavra do SENHOR veio a Zacarias noquarto [dia] do nono mês, [que é] Quisleu,","2":"Quando os de Betel enviaram Sarezer e Regém-Meleque e seus homens, para suplicarem o favor do SENHOR,","3":"E para dizerem aos sacerdotes que estavam na casa do SENHOR dos exércitos e aos profetas o seguinte: Devemos chorar e jejuar no quinto mês, como já temos feito há tantos anos?","4":"Então a palavra do SENHOR dos exércitos veio a mim, dizendo:","5":"Fala a todo o povo desta terra, e aos sacerdotes, dizendo: Quando jejuastes e chorastes no quinto e no sétimo [mês] durante estes setenta anos, por acaso jejuastes verdadeiramente para mim?","6":"E quando comeis e bebeis, não foi para vós que comeis e bebeis?","7":"Não são estas as palavras que o SENHOR pregou por meio dos antigos profetas, quando Jerusalém estava habitada e tranquila, com suas cidades ao seu redor, e o Sul e a campina eram habitadas?","8":"E a palavra do SENHOR veio a Zacarias, dizendo:","9":"Assim falou o SENHOR dos exércitos, dizendo: Julgai juízo verdadeiro, e praticai piedade e misericórdia cada um com seu irmão;","10":"Não oprimais à viúva, nem ao órfão, nem ao estrangeiro, nem ao pobre; e ninguém planeje o mal em seu coração contra seu irmão.","11":"Porém não quiseram prestar atenção; ao invés disso deram as costas e taparam suas orelhas para não ouvirem.","12":"E fizeram seus corações duros como diamante, para não ouvirem a Lei nem as palavras que o SENHOR dos exércitos enviou por seu Espírito através dos antigos profetas; por isso veio grande ira da parte do SENHOR dos exércitos.","13":"Por causa disso, tal como eles não ouviram quando eu clamei, assim tamb em quando eles clamaram eu não ouvi,diz o SENHOR dos exércitos;","14":"E eu os espalhei com turbilhão entre todas as nações, que eles não conheciam, e a terra foi assolada atrás deles, de maneira que ninguém passava por ela, nem voltava; porque tornaram a terra desejada em ruínas."},"8":{"1":"Depois veio a palavra do SENHOR dos exércitos, dizendo:","2":"Assim diz o SENHOR dos exércitos: Tenho grande zelo por Sião, e com grande furor zelo por ela.","3":"Assim diz o SENHOR: Eu voltarei a Sião, e habitarei no meio de Jerusalém. E Jerusalém será chamada Cidade da Verdade, e o monte do SENHOR dos exércitos, Monte Santo.","4":"Assim diz o SENHOR dos exércitos: Novamente idosos e idosas se sentarão nas praças de Jerusalém, e cada um terá seu bordão em sua mão, por causa da abundância de dias.","5":"E as ruas da cidade se encherão de meninos e meninas, brincando em suas ruas.","6":"Assim diz o SENHOR dos exércitos: Se isto era extraordinário demais aos olhos do restante do povo naqueles dias, seria também extraordinário demais aos meus olhos? Diz o SENHOR dos exércitos.","7":"Assim disse o SENHOR dos exércitos: Eis que salvarei o meu povo da terra do oriente, e da terra do ocidente.","8":"Eu os trarei, e habitarão no meio de Jerusalém; e eles serão meu povo, e eu serei o Deus deles em verdade e em justiça.","9":"Assim diz o SENHOR dos exércitos: Sejam fortes vossas mãos, vós que nestes dias ouvistes estas palavras da boca dos profetas que estiveram no dia em que foi posto o fundamento da casa do SENHOR dos exércitos, para que o templo fosse edificado.","10":"Porque antes daqueles dias não houve salário para homem, nem salário para animal, e o que entrava e o que saía não tinha paz por causa do inimigo, porque eu mandei a todos, cada um contra seu próximo.","11":"Mas agora com o resto deste povo não farei como nos dias passados, diz o SENHOR dos exércitos.","12":"Porque a semente será próspera, a vide dará seu fruto, a terra dará seu produto, e os céus darão seu orvalho; e farei o resto deste povo herdar tudo isto.","13":"E será, ó casa de Judá e casa de Israel, que, assim como fostes maldição entre as nações, assim também eu vos salvarei, e sereis bênção. Não temais, fortaleçam-se vossas mãos.","14":"Porque assim diz o SENHOR dos exércitos: Assim como eu pensei vos fazer o mal quando vossos pais me provocaram à ira, diz o SENHOR dos exércitos, e não me arrependi;","15":"Assim também voltei a pensar em fazer o bem a Jerusalém e à casa de Judá nestes dias; não temais.","16":"Estas são as coisas que deveis fazer: falai verdade cada qual com seu próximo; julgai em vossas portas verdade e juízo de paz:","17":"E ninguém planeje o mal em seu coração contra seu próximo, nem ameis o juramento falso; porque eu odeio todas estas coisas, diz o SENHOR","18":"E a palavra do SENHOR dos exércitos veio a mim, dizendo:","19":"Assim diz o SENHOR dos exércitos: O jejum do quarto, do quinto, do sétimo, e do décimo mês, se voltarão à casa de Judá serão para prazer e alegria, e para festividades solenes. Amai, pois, a verdade e a paz.","20":"Assim diz o SENHOR dos exércitos: Ainda será que povos e moradores de muitas cidades virão,","21":"E irão os moradores de uma [cidade] à outra, dizendo: Vamos suplicar o favor do SENHOR, e buscar ao SENHOR dos exércitos. Eu também irei.","22":"Assim muitos povos e poderosas nações virão para buscar ao SENHOR dos exércitos em Jerusalém, e suplicar o favor do SENHOR.","23":"Assim diz o SENHOR dos exércitos: Naqueles dias será que dez homens de todas as línguas das nações, pegarão na orla da veste de um judeu, dizendo: Iremos convosco, porque temos ouvido que Deus está convosco."}}};
+const BOOKS = { zec: 'Zacarias', hag: 'Ageu', ezr: 'Esdras', neh: 'Neemias' };
+
+(() => {
+  const deck = document.getElementById('deck');
+  const slides = Array.from(deck.querySelectorAll('.slide'));
+  const total = slides.length;
+  const dock = document.getElementById('dock');
+  const indexEl = document.getElementById('index');
+  let cur = 0;
+  const revealed = slides.map(() => []);
+
+  /* ---------- Escala do palco ---------- */
+  function fit() {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    deck.style.transform = `translate(-50%, -50%) scale(${s})`;
+  }
+  addEventListener('resize', fit); fit();
+
+  /* ---------- Estrelas ---------- */
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  document.querySelectorAll('.stars').forEach((el, k) => {
+    const r = rng(k * 97 + 13); let html = '';
+    for (let i = 0; i < 170; i++) {
+      const s = r() < .86 ? 1.4 + r() * 1.6 : 3 + r() * 1.6;
+      const tw = r() < .3;
+      html += `<i style="left:${(r() * 100).toFixed(2)}%;top:${(r() * 100).toFixed(2)}%;width:${s.toFixed(1)}px;height:${s.toFixed(1)}px;opacity:${(.2 + r() * .6).toFixed(2)};${tw ? `animation:twinkle ${(3 + r() * 4).toFixed(1)}s ${(r() * 4).toFixed(1)}s infinite ease-in-out` : ''}"></i>`;
+    }
+    el.innerHTML = html;
+  });
+
+  /* ---------- Pinturas (carregadas da pasta imagens/, se existirem) ---------- */
+  function loadImage(base, ok) {
+    const exts = ['jpg', 'jpeg', 'png', 'webp'];
+    (function tryNext(i) {
+      if (i >= exts.length) return;
+      const src = `${base}.${exts[i]}`;
+      const img = new Image();
+      img.onload = () => ok(src);
+      img.onerror = () => tryNext(i + 1);
+      img.src = src;
+    })(0);
+  }
+  document.querySelectorAll('[data-zimg]').forEach(el => loadImage(el.dataset.zimg, src => { el.dataset.zsrc = src; }));
+  document.querySelectorAll('[data-img]').forEach(fig => {
+    loadImage(fig.dataset.img, src => {
+      fig.style.backgroundImage = `url("${src}")`;
+      fig.dataset.src = src;
+      const s = fig.closest('.slide');
+      if (fig.classList.contains('bgimg')) s.classList.add('has-bg');
+      else s.classList.add('has-panel', fig.classList.contains('left') ? 'panel-left' : 'panel-right');
+    });
+  });
+
+  /* ---------- Rodapé ---------- */
+  slides.forEach((s, i) => {
+    if (s.hasAttribute('data-nofolio')) return;
+    const f = document.createElement('div');
+    f.className = 'folio';
+    f.innerHTML = `<span>Zacarias · Visões da restauração</span><span>${String(i + 1).padStart(2, '0')}</span>`;
+    s.appendChild(f);
+  });
+
+  /* ---------- Navegação ---------- */
+  const frags = i => Array.from(slides[i].querySelectorAll('.f'));
+  const themeOf = s => s.classList.contains('night') ? 'night' : s.classList.contains('dawn') ? 'dawn' : 'light';
+
+  function go(i, dir = 1) {
+    i = Math.max(0, Math.min(total - 1, i));
+    closeInput(); closePop();
+    const fs = frags(i);
+    if (dir < 0) { fs.forEach(f => f.classList.add('on')); revealed[i] = fs.slice(); }
+    else { fs.forEach(f => f.classList.remove('on')); revealed[i] = []; }
+    slides[cur].classList.remove('active');
+    cur = i;
+    slides[cur].classList.add('active');
+    document.body.dataset.theme = themeOf(slides[cur]);
+    document.getElementById('count').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('progress').style.width = `${(cur / (total - 1)) * 100}%`;
+    document.getElementById('bAdd').hidden = !slides[cur].classList.contains('question');
+    try { history.replaceState(null, '', '#' + (cur + 1)); } catch (e) {}
+    renderIndex();
+  }
+  function reveal(el) { if (!el.classList.contains('on')) { el.classList.add('on'); revealed[cur].push(el); } }
+  function next() {
+    const pending = frags(cur).filter(f => !f.classList.contains('on'));
+    if (pending.length) reveal(pending[0]);
+    else if (cur < total - 1) go(cur + 1, 1);
+  }
+  function prev() {
+    const stack = revealed[cur];
+    if (stack.length) stack.pop().classList.remove('on');
+    else if (cur > 0) go(cur - 1, -1);
+  }
+
+  /* Símbolos: clique revela o título */
+  document.querySelectorAll('[data-reveal]').forEach(fig => {
+    fig.addEventListener('click', e => {
+      e.stopPropagation();
+      const cap = fig.querySelector('.f');
+      if (cap.classList.contains('on')) {
+        cap.classList.remove('on');
+        revealed[cur] = revealed[cur].filter(x => x !== cap);
+      } else reveal(cap);
+    });
+  });
+
+  /* ---------- Ampliação: textos, versículos e pinturas ---------- */
+  const pop = document.getElementById('pop');
+  const popBody = document.getElementById('popBody');
+  const popKicker = document.getElementById('popKicker');
+  const popCount = document.getElementById('popCount');
+  const popCredit = document.getElementById('popCredit');
+  const popNav = document.getElementById('popNav');
+  let ps = null; // estado do pop-up
+
+  const isPopOpen = () => pop.classList.contains('open');
+
+  function parseRef(spec) {
+    const out = [];
+    spec.split(';').forEach(seg => {
+      const m = seg.trim().match(/^(\w+)\s+(\d+):(\d+)(?:-(?:(\d+):)?(\d+))?$/);
+      if (!m) return;
+      const book = m[1], c1 = +m[2], v1 = +m[3];
+      const c2 = m[4] ? +m[4] : c1, v2 = m[5] ? +m[5] : (m[4] ? null : v1);
+      for (let c = c1; c <= c2; c++) {
+        const ch = (BIBLE[book] || {})[c] || {};
+        const nums = Object.keys(ch).map(Number).sort((a, b) => a - b);
+        nums.forEach(v => {
+          if (c === c1 && v < v1) return;
+          if (c === c2 && v2 !== null && v > v2) return;
+          out.push({ book, c, v, t: ch[v] });
+        });
+      }
+    });
+    return out;
+  }
+  function refTitle(verses) {
+    if (!verses.length) return '';
+    const a = verses[0], b = verses[verses.length - 1];
+    const name = BOOKS[a.book] || a.book;
+    if (verses.length === 1) return `${name} ${a.c}.${a.v}`;
+    // detecta trechos não contínuos
+    const parts = []; let start = a, prevV = a;
+    for (let i = 1; i <= verses.length; i++) {
+      const v = verses[i];
+      const contiguous = v && v.c === prevV.c && v.v === prevV.v + 1 || (v && v.c === prevV.c + 1 && v.v === 1);
+      if (!contiguous) {
+        const s = start, e = prevV;
+        parts.push(s === e ? `${s.c}.${s.v}` : (s.c === e.c ? `${s.c}.${s.v}–${e.v}` : `${s.c}.${s.v}–${e.c}.${e.v}`));
+        start = v;
+      }
+      prevV = v || prevV;
+    }
+    return `${name} ${parts.join('; ')}`;
+  }
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const fmtVerse = t => esc(t).replace(/\[([^\]]*)\]/g, '<i>$1</i>');
+
+  function paginate(verses, limit = 470) {
+    const pages = []; let page = [], len = 0, lastC = null;
+    verses.forEach(v => {
+      const l = v.t.length + 6;
+      if (page.length && len + l > limit) { pages.push(page); page = []; len = 0; }
+      page.push(v); len += l;
+    });
+    if (page.length) pages.push(page);
+    return pages;
+  }
+
+  function openVerse(spec) {
+    const verses = parseRef(spec);
+    if (!verses.length) return;
+    ps = { type: 'verse', title: refTitle(verses), pages: paginate(verses), i: 0 };
+    renderPop();
+  }
+  function openZoom(el) {
+    const items = Array.from(slides[cur].querySelectorAll('[data-z]')).filter(x => x.offsetParent !== null && getComputedStyle(x).opacity !== '0');
+    let i = items.indexOf(el); if (i < 0) { items.push(el); i = items.length - 1; }
+    ps = { type: 'zoom', items, i };
+    renderPop();
+  }
+  function openImage(src) {
+    ps = { type: 'image', src };
+    renderPop();
+  }
+
+  function renderPop() {
+    pop.classList.add('open');
+    pop.classList.toggle('image', ps.type === 'image');
+    popCredit.textContent = '';
+    if (ps.type === 'image') {
+      popBody.innerHTML = `<img src="${ps.src}" alt="">`;
+      return;
+    }
+    if (ps.type === 'verse') {
+      const page = ps.pages[ps.i];
+      popKicker.textContent = ps.title;
+      const multi = ps.pages[0][0].c !== ps.pages[ps.pages.length - 1].slice(-1)[0].c;
+      let html = '<p class="pv">', lastC = null;
+      page.forEach(v => {
+        const showC = lastC === null ? multi : v.c !== lastC;
+        html += `<sup>${showC ? v.c + '.' + v.v : v.v}</sup>${fmtVerse(v.t)} `;
+        lastC = v.c;
+      });
+      popBody.innerHTML = html + '</p>';
+      popCredit.textContent = 'BLIVRE';
+      setNav(ps.i, ps.pages.length);
+      return;
+    }
+    // zoom
+    const el = ps.items[ps.i];
+    const tpl = el.querySelector(':scope > template.zd, :scope template.zd');
+    popKicker.textContent = slides[cur].dataset.title || '';
+    // pintura opcional ao lado do texto (atributo data-zimg)
+    const zsrc = el.dataset.zsrc;
+    popBody.innerHTML = '';
+    let host = popBody;
+    if (zsrc) {
+      const split = document.createElement('div');
+      split.className = 'pop-split';
+      split.innerHTML = `<div class="pop-img" style="background-image:url('${zsrc}')"></div><div class="pop-text"></div>`;
+      popBody.appendChild(split);
+      host = split.querySelector('.pop-text');
+    }
+    if (tpl) {
+      host.appendChild(tpl.content.cloneNode(true));
+      const inner = host.querySelector('.pop-kicker');
+      if (inner) { popKicker.textContent = inner.textContent; inner.remove(); }
+    } else {
+      const c = el.cloneNode(true);
+      c.querySelectorAll('template, .answer button').forEach(t => t.remove());
+      c.removeAttribute('data-z'); c.removeAttribute('style');
+      c.classList.remove('rise', 'f', 'fs');
+      const wrap = document.createElement('div');
+      wrap.className = 'pop-clone';
+      wrap.appendChild(c);
+      host.appendChild(wrap);
+      // ajusta o tamanho para caber
+      let z = zsrc ? 1.15 : 1.4;
+      wrap.style.zoom = z;
+      const room = host.getBoundingClientRect().height;
+      while (z > .7 && wrap.getBoundingClientRect().height > room) { z -= .05; wrap.style.zoom = z; }
+    }
+    setNav(ps.i, ps.items.length);
+  }
+  function setNav(i, n) {
+    popNav.style.visibility = n > 1 ? 'visible' : 'hidden';
+    popCount.textContent = `${i + 1} / ${n}`;
+    document.getElementById('popPrev').disabled = i === 0;
+    document.getElementById('popNext').disabled = i === n - 1;
+  }
+  function popStep(d) {
+    if (!ps || ps.type === 'image') { if (d > 0) closePop(); return; }
+    const n = ps.type === 'verse' ? ps.pages.length : ps.items.length;
+    const j = ps.i + d;
+    if (j < 0) return;
+    if (j >= n) { closePop(); return; }
+    ps.i = j; renderPop();
+  }
+  function closePop() { pop.classList.remove('open', 'image'); ps = null; }
+
+  document.getElementById('popX').addEventListener('click', e => { e.stopPropagation(); closePop(); });
+  document.getElementById('popPrev').addEventListener('click', e => { e.stopPropagation(); popStep(-1); });
+  document.getElementById('popNext').addEventListener('click', e => { e.stopPropagation(); popStep(1); });
+  pop.addEventListener('click', e => {
+    e.stopPropagation();
+    const vr = e.target.closest('.vr');
+    if (vr) { openVerse(vr.dataset.ref); return; }
+    if (e.target === pop) closePop();
+  });
+
+  /* ---------- Sumário ---------- */
+  function renderIndex() {
+    document.getElementById('indexList').innerHTML = slides.map((s, i) =>
+      `<li><button data-go="${i}" class="${i === cur ? 'cur' : ''}"><span>${i + 1}</span>${s.dataset.title || ''}</button></li>`).join('');
+  }
+  document.getElementById('indexList').addEventListener('click', e => {
+    const b = e.target.closest('[data-go]'); if (!b) return;
+    go(+b.dataset.go, 1); toggleIndex(false);
+  });
+  indexEl.addEventListener('click', e => { if (e.target === indexEl) toggleIndex(false); });
+  function toggleIndex(force) {
+    const open = force ?? !indexEl.classList.contains('open');
+    indexEl.classList.toggle('open', open);
+  }
+
+  /* ---------- Contribuições da classe ---------- */
+  const KEY = 'ebd-zacarias-14-contribuicoes';
+  let notes = { 1: [], 2: [] };
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s[1] && s[2]) notes = s; } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(notes)); } catch (e) {} };
+
+  function renderAnswers(q) {
+    const box = deck.querySelector(`.answers[data-q="${q}"]`);
+    const inputWrap = box.querySelector('.answer-input');
+    box.querySelectorAll('.answer').forEach(a => a.remove());
+    notes[q].forEach((t, i) => {
+      const d = document.createElement('div');
+      d.className = 'answer';
+      d.setAttribute('data-z', '');
+      d.textContent = t;
+      const x = document.createElement('button');
+      x.type = 'button'; x.title = 'Remover'; x.textContent = '×';
+      x.addEventListener('click', e => { e.stopPropagation(); notes[q].splice(i, 1); save(); renderAnswers(q); });
+      d.appendChild(x);
+      box.insertBefore(d, inputWrap);
+    });
+    box.classList.toggle('dense', notes[q].length > 6);
+  }
+  [1, 2].forEach(q => {
+    const box = deck.querySelector(`.answers[data-q="${q}"]`);
+    const w = document.createElement('div');
+    w.className = 'answer-input'; w.hidden = true;
+    w.innerHTML = '<input type="text" maxlength="180" aria-label="Contribuição da classe" autocomplete="off">';
+    box.appendChild(w);
+    const inp = w.querySelector('input');
+    inp.addEventListener('keydown', e => {
+      e.stopPropagation();
+      if (e.key === 'Enter') {
+        const v = inp.value.trim();
+        if (v) { notes[q].push(v); save(); renderAnswers(q); inp.value = ''; }
+        else closeInput();
+      } else if (e.key === 'Escape') closeInput();
+    });
+    renderAnswers(q);
+  });
+  function openInput() {
+    const s = slides[cur]; if (!s.classList.contains('question')) return;
+    const w = s.querySelector('.answer-input'); w.hidden = false;
+    w.querySelector('input').focus();
+  }
+  function closeInput() {
+    deck.querySelectorAll('.answer-input').forEach(w => { w.hidden = true; w.querySelector('input').value = ''; });
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') document.activeElement.blur();
+  }
+
+  /* ---------- Resumo ---------- */
+  function copySummary() {
+    const list = q => notes[q].length ? notes[q].map(n => `• ${n}`).join('\n') : '• —';
+    const text =
+`*Escola Dominical — Estudo 14*
+*Zacarias: Visões da Restauração (caps. 1–8)*
+
+• *Zacarias, "Javé lembra-se":* contemporâneo de Ageu, de família sacerdotal (Zc 1.1; Ne 12.16).
+• *Os tempos (520–518 a.C.):* país devastado, colheitas prejudicadas, divisões — mas permanece a esperança de restauração.
+• *As visões noturnas:* Deus fala por imagens a um povo cansado. "Não por força, nem por violência, mas sim por meu espírito" (Zc 4.6).
+• *O verdadeiro jejum (cap. 7):* amor aos necessitados e obediência à Palavra. Em 515 a.C., o Templo foi reconstruído.
+
+*1. A linguagem que usamos para chamar o povo de Deus à missão*
+${list(1)}
+
+*2. Outras linguagens para proclamar a Palavra*
+${list(2)}`;
+    const done = () => toast('Resumo da aula copiado');
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+    function fallback() {
+      const t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); done(); } catch (e) { toast('Não foi possível copiar'); }
+      t.remove();
+    }
+  }
+  let toastT;
+  function toast(msg) {
+    const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  /* ---------- Tela cheia ---------- */
+  function fullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+    else document.exitFullscreen?.().catch(() => {});
+  }
+
+  /* ---------- Entrada ---------- */
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    const bo = document.getElementById('blackout');
+    if (bo.classList.contains('on') && !['b', 'B', '.'].includes(e.key)) { bo.classList.remove('on'); return; }
+    if (indexEl.classList.contains('open')) {
+      if (['Escape', 'g', 'G'].includes(e.key)) toggleIndex(false);
+      return;
+    }
+    if (isPopOpen()) {
+      switch (e.key) {
+        case 'Escape': case 'Backspace': e.preventDefault(); closePop(); break;
+        case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Enter': e.preventDefault(); popStep(1); break;
+        case 'ArrowLeft': case 'ArrowUp': case 'PageUp': e.preventDefault(); popStep(-1); break;
+        case 'f': case 'F': fullscreen(); break;
+      }
+      return;
+    }
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Enter':
+        e.preventDefault(); next(); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp': case 'Backspace':
+        e.preventDefault(); prev(); break;
+      case 'Home': go(0, 1); break;
+      case 'End': go(total - 1, -1); break;
+      case 'f': case 'F': fullscreen(); break;
+      case 'g': case 'G': toggleIndex(); break;
+      case 'n': case 'N': e.preventDefault(); openInput(); break;
+      case 'b': case 'B': case '.': bo.classList.toggle('on'); break;
+    }
+  });
+
+  deck.addEventListener('click', e => {
+    if (isPopOpen()) return;
+    const vr = e.target.closest('.vr');
+    if (vr) { openVerse(vr.dataset.ref); return; }
+    if (e.target.closest('button, input, [data-reveal]')) return;
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') { closeInput(); return; }
+    const panel = e.target.closest('.panel');
+    if (panel && panel.dataset.src) { openImage(panel.dataset.src); return; }
+    const z = e.target.closest('[data-z]');
+    if (z && getComputedStyle(z).opacity !== '0') { openZoom(z); return; }
+    next();
+  });
+  document.getElementById('blackout').addEventListener('click', e => e.currentTarget.classList.remove('on'));
+
+  let tx = null;
+  addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx; tx = null;
+    if (Math.abs(dx) > 50) { if (isPopOpen()) popStep(dx < 0 ? 1 : -1); else (dx < 0 ? next() : prev()); }
+  });
+
+  document.getElementById('bPrev').onclick = () => isPopOpen() ? popStep(-1) : prev();
+  document.getElementById('bNext').onclick = () => isPopOpen() ? popStep(1) : next();
+  document.getElementById('bIndex').onclick = () => toggleIndex();
+  document.getElementById('bAdd').onclick = openInput;
+  document.getElementById('bCopy').onclick = copySummary;
+  document.getElementById('bFull').onclick = fullscreen;
+
+  /* Controles e cursor somem quando o mouse fica parado */
+  let idleT;
+  function wake() {
+    dock.classList.add('show'); document.body.classList.remove('idle');
+    clearTimeout(idleT);
+    idleT = setTimeout(() => {
+      if (dock.matches(':hover')) return wake();
+      dock.classList.remove('show'); document.body.classList.add('idle');
+    }, 2600);
+  }
+  addEventListener('mousemove', wake);
+
+  /* ---------- Início ---------- */
+  const start = parseInt((location.hash || '').slice(1), 10);
+  go(Number.isFinite(start) ? start - 1 : 0, 1);
+})();
+</script>
+</body>
+</html>
