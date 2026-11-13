@@ -152,6 +152,15 @@
   .sign svg { width: 64px; height: 64px; }
   .title-slide .sign { position: absolute; left: 160px; bottom: 90px; }
 
+  /* ---------- Alívio cômico ---------- */
+  .snapshot {
+    margin: 0; padding: 26px 26px 90px; background: #FBF8F1; transform: rotate(-2.5deg);
+    box-shadow: 0 40px 90px -20px rgba(0,0,0,.65), 0 0 0 1px rgba(0,0,0,.08); cursor: zoom-in;
+  }
+  .snapshot img { display: block; height: 690px; width: auto; }
+  .slide.active .snapshot.rise { animation: snapIn 1s cubic-bezier(.2,.8,.2,1.15) both .15s; }
+  @keyframes snapIn { from { opacity: 0; transform: rotate(-12deg) scale(.7) translateY(60px); } to { opacity: 1; transform: rotate(-2.5deg); } }
+
   /* ---------- Divisores ---------- */
   .divider .numeral { font: 600 96px/1 var(--serif); color: var(--accent); opacity: .9; margin-bottom: 30px; letter-spacing: .02em; }
   .divider .h1 { font-size: 150px; }
@@ -602,6 +611,12 @@
     <h1 class="display rise" style="--i:1">Zacarias</h1>
     <p class="subtitle rise" style="--i:2">Visões da restauração</p>
     <div class="sign rise" style="--i:4"><svg style="color:#F2EADB"><use href="#emblem"/></svg>Igreja Metodista</div>
+  </section>
+
+  <!-- Alívio cômico -->
+  <section class="slide night center" data-title="Alívio cômico" data-nofolio>
+    <div class="stars"></div>
+    <figure class="snapshot rise" data-photo="imagens/alivio-comico.jpg"><img src="imagens/alivio-comico.jpg" alt=""></figure>
   </section>
 
   <!-- 2 · Dinâmica: imagens -->
@@ -1589,6 +1604,8 @@ ${list(2)}`;
     if (vr) { openVerse(vr.dataset.ref); return; }
     if (e.target.closest('button, input, [data-reveal]')) return;
     if (document.activeElement && document.activeElement.tagName === 'INPUT') { closeInput(); return; }
+    const photo = e.target.closest('[data-photo]');
+    if (photo) { openImage(photo.dataset.photo); return; }
     const panel = e.target.closest('.panel');
     if (panel && panel.dataset.src) { openImage(panel.dataset.src); return; }
     const z = e.target.closest('[data-z]');
