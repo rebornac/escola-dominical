@@ -550,6 +550,34 @@
       <path d="M114 30 L120 24 L126 30 M114 66 L120 72 L126 66 M102 42 L96 48 L102 54 M138 42 L144 48 L138 54"/>
     </symbol>
 
+    <!-- Símbolos dos avisos do quebra-gelo -->
+    <symbol id="aviso-rotatoria" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="90" fill="#FFFFFF" stroke="#C62828" stroke-width="16"/>
+      <path d="M115.7 143.2 A46 46 0 0 0 143.7 85.8" fill="none" stroke="#111" stroke-width="12" stroke-linecap="butt"/><polygon points="138.2,68.7 158.0,81.1 129.5,90.4" fill="#111"/><path d="M54.7 92.0 A46 46 0 0 0 90.4 145.0" fill="none" stroke="#111" stroke-width="12" stroke-linecap="butt"/><polygon points="108.0,148.7 87.3,159.7 93.6,130.3" fill="#111"/><path d="M129.6 64.8 A46 46 0 0 0 65.8 69.2" fill="none" stroke="#111" stroke-width="12" stroke-linecap="butt"/><polygon points="53.8,82.6 54.7,59.2 77.0,79.3" fill="#111"/>
+    </symbol>
+    <symbol id="aviso-carregador" viewBox="0 0 200 200">
+      <g fill="none" stroke="#F57C00" stroke-width="6" stroke-linecap="round">
+        <path d="M46 40 c-6 -7 6 -13 0 -20 c-6 -7 6 -13 0 -20" transform="translate(0 6)"/>
+        <path d="M66 40 c-6 -7 6 -13 0 -20 c-6 -7 6 -13 0 -20" transform="translate(0 6)"/>
+        <path d="M86 40 c-6 -7 6 -13 0 -20 c-6 -7 6 -13 0 -20" transform="translate(0 6)"/>
+      </g>
+      <path d="M57 74 V54 M77 74 V54" stroke="#333" stroke-width="8" stroke-linecap="round"/>
+      <rect x="40" y="72" width="54" height="52" rx="12" fill="#333"/>
+      <path d="M67 124 C67 150 50 158 50 182" fill="none" stroke="#333" stroke-width="9" stroke-linecap="round"/>
+      <rect x="128" y="34" width="30" height="112" rx="15" fill="#FFFFFF" stroke="#333" stroke-width="6"/>
+      <circle cx="143" cy="152" r="24" fill="#E53935" stroke="#333" stroke-width="6"/>
+      <rect x="137" y="62" width="12" height="90" rx="6" fill="#E53935"/>
+      <path d="M160 64 h8 M160 84 h8 M160 104 h8" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="aviso-elevador" viewBox="0 0 200 200">
+      <rect x="22" y="14" width="146" height="172" rx="14" fill="#F2F2F2" stroke="#333" stroke-width="7"/>
+      <rect x="22" y="14" width="146" height="40" rx="12" fill="#333"/>
+      <polygon points="66,42 78,24 90,42" fill="#FFFFFF"/>
+      <polygon points="100,24 112,42 124,24" fill="#FFFFFF"/>
+      <g fill="#333"><circle cx="56" cy="80" r="12"/><path d="M39 160 V112 Q39 96 56 96 Q73 96 73 112 V160 Z"/><circle cx="95" cy="80" r="12"/><path d="M78 160 V112 Q78 96 95 96 Q112 96 112 112 V160 Z"/><circle cx="134" cy="80" r="12"/><path d="M117 160 V112 Q117 96 134 96 Q151 96 151 112 V160 Z"/></g>
+      <circle cx="160" cy="160" r="34" fill="#E53935" stroke="#FFFFFF" stroke-width="5"/>
+      <text x="160" y="171" text-anchor="middle" font-family="Source Sans 3, Segoe UI, sans-serif" font-weight="700" font-size="30" fill="#FFFFFF">kg</text>
+    </symbol>
     <!-- Cruz e chama -->
     <symbol id="emblem" viewBox="0 0 100 100">
       <path d="M44 92 C24 83, 16 64, 26 44 C31 34, 38 27, 40 16 C43 29, 38 41, 41 53 C43 62, 47 72, 44 92 Z" fill="#C8372D"/>
@@ -643,17 +671,17 @@
   <!-- 3–5 · Dinâmica: textos -->
   <section class="slide light" data-title="Aviso 1 · Trânsito">
     <div class="dense-meta rise"><div class="kicker">Trânsito</div><div class="ref">1 / 3</div></div>
-    <p class="dense rise" style="--i:1" data-z data-zsym="0">“Ao aproximar-se de uma interseção circular não semaforizada, o condutor deve reduzir gradualmente a velocidade de deslocamento e ceder a preferência de passagem aos veículos que já se encontram circulando no anel viário interno antes de ingressar na faixa.”</p>
+    <p class="dense rise" style="--i:1" data-z data-zsym="aviso-rotatoria">“Ao aproximar-se de uma interseção circular não semaforizada, o condutor deve reduzir gradualmente a velocidade de deslocamento e ceder a preferência de passagem aos veículos que já se encontram circulando no anel viário interno antes de ingressar na faixa.”</p>
   </section>
 
   <section class="slide light" data-title="Aviso 2 · Carregador">
     <div class="dense-meta rise"><div class="kicker">Celular</div><div class="ref">2 / 3</div></div>
-    <p class="dense rise" style="--i:1" data-z data-zsym="1">“Durante o processo de transferência de corrente elétrica contínua para o acumulador do aparelho celular, é normal observar a dissipação moderada de energia térmica na fonte transformadora; contudo, caso a temperatura ultrapasse o limite seguro ao toque, recomenda-se desconectar o cabo da rede elétrica.”</p>
+    <p class="dense rise" style="--i:1" data-z data-zsym="aviso-carregador">“Durante o processo de transferência de corrente elétrica contínua para o acumulador do aparelho celular, é normal observar a dissipação moderada de energia térmica na fonte transformadora; contudo, caso a temperatura ultrapasse o limite seguro ao toque, recomenda-se desconectar o cabo da rede elétrica.”</p>
   </section>
 
   <section class="slide light" data-title="Aviso 3 · Elevador">
     <div class="dense-meta rise"><div class="kicker">Elevador</div><div class="ref">3 / 3</div></div>
-    <p class="dense rise" style="--i:1" data-z data-zsym="2">“Para preservar a integridade estrutural dos cabos de tração e o funcionamento adequado dos freios de segurança da cabine, solicita-se aos usuários que respeitem rigorosamente a carga máxima homologada de seiscentos quilogramas ou o limite de oito passageiros simultâneos.”</p>
+    <p class="dense rise" style="--i:1" data-z data-zsym="aviso-elevador">“Para preservar a integridade estrutural dos cabos de tração e o funcionamento adequado dos freios de segurança da cabine, solicita-se aos usuários que respeitem rigorosamente a carga máxima homologada de seiscentos quilogramas ou o limite de oito passageiros simultâneos.”</p>
   </section>
 
   <!-- 6 · Por que visões -->
@@ -1367,10 +1395,9 @@ const BOOKS = { zec: 'Zacarias', hag: 'Ageu', ezr: 'Esdras', neh: 'Neemias' };
       while (z > .7 && wrap.getBoundingClientRect().height > room) { z -= .05; wrap.style.zoom = z; }
     }
     if (el.dataset.zsym !== undefined) {
-      const tile = document.querySelectorAll('[data-reveal] .sym-tile')[+el.dataset.zsym];
       const s = document.createElement('div');
       s.className = 'pop-sym' + (ps.symOn ? ' on' : '');
-      s.innerHTML = tile ? tile.innerHTML : '';
+      s.innerHTML = `<svg viewBox="0 0 200 200"><use href="#${el.dataset.zsym}"/></svg>`;
       popBody.appendChild(s);
     }
     setNav(ps.i, ps.items.length);
